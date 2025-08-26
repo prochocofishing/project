@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build"
+    "build": "ng build",
+    "deploy": "ng build --configuration production --base-href \"https://prochocofishing.github.io/project/\" && npx angular-cli-ghpages --dir=dist/demo"
   },
   "dependencies": {
     "@angular/animations": "^20.1.7",
@@ -22,6 +23,7 @@
     "@angular/build": "^20.1.6",
     "@angular/cli": "^20.1.6",
     "@angular/compiler-cli": "^20.1.7",
+    "angular-cli-ghpages": "^2.0.3",
     "typescript": "^5.8.2"
   }
 }
