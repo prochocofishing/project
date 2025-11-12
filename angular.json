@@ -22,11 +22,14 @@
               "namedChunks": false,
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false
+              "sourceMap": false,
+              "baseHref": "https://www.prochoco.com/"
             }
           },
           "options": {
-            "assets": [],
+            "assets": [
+              "src/CNAME"
+            ],
             "index": "src/index.html",
             "main": "src/main.ts",
             "outputPath": "dist/prochoco",

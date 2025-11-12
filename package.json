@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "deploy": "ng build --configuration production --base-href \"https://www.prochoco.com\" && npx angular-cli-ghpages --dir=dist/prochoco"
+    "build:prod": "ng build --configuration production",
+    "deploy": "npm run build:prod && npx angular-cli-ghpages --dir=dist/prochoco"
   },
   "dependencies": {
   "@angular/animations": "^20.2.1",
