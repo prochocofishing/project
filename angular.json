@@ -28,7 +28,12 @@
           },
           "options": {
             "assets": [
-              "src/CNAME"
+              "src/CNAME",
+              {
+                "glob": "**/*",
+                "input": "src/images",
+                "output": "/assets/images"
+              }
             ],
             "index": "src/index.html",
             "main": "src/main.ts",

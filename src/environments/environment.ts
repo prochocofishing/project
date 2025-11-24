@@ -1,4 +1,9 @@
 export const environment = {
   production: false,
-  baseHref: '/'
+  baseHref: '/',
+  emailjs: {
+    serviceId: '',
+    templateId: '',
+    userId: ''
+  }
 };
