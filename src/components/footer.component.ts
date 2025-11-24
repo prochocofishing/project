@@ -18,9 +18,19 @@ import { TranslateService } from "../app/services/translate.service";
               {{ translate.t("footer.brand.description") }}
             </p>
             <div class="social-links">
-              <a href="https://www.facebook.com/profile.php?id=61577095214540" target="_blank"  class="social-link" aria-label="Facebook">📘</a>
+              <a href="https://www.facebook.com/profile.php?id=61577095214540" target="_blank" rel="noopener noreferrer" class="social-link facebook" aria-label="Facebook">
+                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
+                  <title>Facebook</title>
+                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.85 7.94 9.8v-6.93H7.9V12h2.04V9.8c0-2.02 1.2-3.14 3.03-3.14.88 0 1.8.16 1.8.16v1.98h-1.01c-.99 0-1.3.62-1.3 1.25V12h2.22l-.36 2.87h-1.86v6.93C18.56 20.85 22 16.84 22 12z" />
+                </svg>
+              </a>
               <!-- <a href="#" class="social-link" aria-label="Instagram">📷</a> -->
-              <a href="https://www.youtube.com/@PROCHOCO-FISHING" target="_blank"  class="social-link" aria-label="YouTube">📺</a>
+              <a href="https://www.youtube.com/@PROCHOCO-FISHING" target="_blank" rel="noopener noreferrer" class="social-link youtube" aria-label="YouTube">
+                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
+                  <title>YouTube</title>
+                  <path d="M23.5 6.2c-.3-1.1-1.2-2-2.3-2.2C18.4 3.5 12 3.5 12 3.5s-6.4 0-9.2.5C1.7 4.2.8 5.1.5 6.2.1 7.9 0 10 0 10s0 2.1.5 3.8c.3 1.1 1.2 2 2.3 2.2 2.8.5 9.2.5 9.2.5s6.4 0 9.2-.5c1.1-.2 2-.9 2.3-2.2.5-1.7.5-3.8.5-3.8s0-2.1-.5-3.8zM9.8 13.5V6.5l6.2 3.5-6.2 3.5z" />
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -120,15 +130,41 @@ import { TranslateService } from "../app/services/translate.service";
         justify-content: center;
         width: 40px;
         height: 40px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.04);
         border-radius: 8px;
         text-decoration: none;
-        font-size: 1.25rem;
-        transition: all 0.3s ease;
+        color: #94a3b8;
+        transition: all 0.2s ease;
       }
 
-      .social-link:hover {
-        background: #3b82f6;
+      .social-link svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+        fill: currentColor;
+      }
+
+      /* Brand-specific defaults */
+      .social-link.facebook {
+        color: #1877F2; /* Facebook blue */
+        background: rgba(24, 119, 242, 0.08);
+      }
+
+      .social-link.youtube {
+        color: #FF0000; /* YouTube red */
+        background: rgba(255, 0, 0, 0.06);
+      }
+
+      /* Hover: brand background with white icon */
+      .social-link.facebook:hover {
+        background: #1877F2;
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .social-link.youtube:hover {
+        background: #FF0000;
+        color: #fff;
         transform: translateY(-2px);
       }
 
