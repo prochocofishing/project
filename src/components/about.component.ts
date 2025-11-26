@@ -14,6 +14,9 @@ import { TranslateService } from '../app/services/translate.service';
             <h2 class="section-title">{{ translate.t('about.title') }}</h2>
             <p class="intro-text">{{ translate.t('about.paragraph') }}</p>
           </div>
+          <div class="mascot-container">
+            <img src="assets/images/logomascot.png" alt="PROCHOCO Mascot" class="mascot-image-full" />
+          </div>
         </div>
       </div>
     </section>
@@ -33,7 +36,23 @@ import { TranslateService } from '../app/services/translate.service';
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
-      align-items: start;
+      align-items: center;
+    }
+
+    .mascot-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .mascot-image-full {
+      width: 100%;
+      height: auto;
+      max-width: 400px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+      border-radius: 16px;
     }
 
     .section-title {

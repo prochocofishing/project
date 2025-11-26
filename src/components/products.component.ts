@@ -1,16 +1,19 @@
 import { Component, signal, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
 import { TranslateService } from "../app/services/translate.service";
 
 interface Product {
   id: number;
   name: string;
-  category: string;
-  size: string;
+  categoryKey: string;
+  sizeNumber: string;
+  sizeLength: string;
   weight: string;
+  sinking: string;
   image: string;
   description: string;
-  features: string[];
+  featureKeys: string[];
 }
 
 @Component({
@@ -32,7 +35,7 @@ interface Product {
             [class.active]="selectedCategory() === category"
             (click)="setCategory(category)"
           >
-            {{ category }}
+            {{ getTranslatedCategory(category) }}
           </button>
           }
         </div>
@@ -51,13 +54,16 @@ interface Product {
               <div class="product-header">
                 <h3 class="product-name">{{ product.name }}</h3>
               </div>
-              <p class="product-description">{{ product.description }}</p>
+              <div class="product-description" [innerHTML]="getFormattedDescription(product.description)"></div>
               <div class="product-specs">
                 <div class="spec">
                   <span class="spec-label">{{
                     translate.t("product.spec.size")
                   }}</span>
-                  <span class="spec-value">{{ product.size }}</span>
+                  <div class="spec-value">
+                    <div>{{ product.sizeNumber }}</div>
+                    <div>{{ product.sizeLength }}</div>
+                  </div>
                 </div>
                 <div class="spec">
                   <span class="spec-label">{{
@@ -65,11 +71,17 @@ interface Product {
                   }}</span>
                   <span class="spec-value">{{ product.weight }}</span>
                 </div>
+                <div class="spec">
+                  <span class="spec-label">{{
+                    translate.t("product.spec.sinking")
+                  }}</span>
+                  <span class="spec-value">{{ product.sinking }}</span>
+                </div>
               </div>
               <div class="product-features">
-                @for (feature of product.features; track feature) {
+                @for (featureKey of product.featureKeys; track featureKey) {
                 <div class="feature-tag">
-                  {{ feature }}
+                  {{ translate.t(featureKey) }}
                 </div>
                 }
               </div>
@@ -248,21 +260,36 @@ interface Product {
 
       .product-description {
         color: #cbd5e1;
-        line-height: 1.5;
+        line-height: 1.6;
         margin-bottom: 1rem;
         font-size: 0.9rem;
       }
 
+      .desc-question {
+        color: #60a5fa;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .desc-line {
+        color: #cbd5e1;
+        margin-bottom: 0.35rem;
+        padding-left: 0.5rem;
+      }
+
       .product-specs {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 0.5rem;
         margin-bottom: 1rem;
       }
 
       .spec {
         display: flex;
+        flex-direction: column;
         font-size: 0.875rem;
+        gap: 0.25rem;
       }
 
       .spec-label {
@@ -271,8 +298,12 @@ interface Product {
       }
 
       .spec-value {
-        color: #f1f5f9;
-        font-weight: 500;
+        color: #cbd5e1;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        line-height: 1.2;
       }
 
       .product-colors {
@@ -312,12 +343,14 @@ interface Product {
       }
 
       .feature-tag {
-        background: rgba(59, 130, 246, 0.2);
-        color: #3b82f6;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: #ffffff;
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
         font-size: 0.75rem;
-        font-weight: 500;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .cta-section {
@@ -383,89 +416,97 @@ interface Product {
 })
 export class ProductsComponent {
   hoveredProduct = signal<number | null>(null);
-  selectedCategory = signal("All");
+  selectedCategory = signal("all");
   products = signal<Product[]>([
     {
       id: 1,
       name: "PROCHOCO CIRCUS",
-      category: "Camarão com chumbo visivel",
-      size: '2.5 - 10 cm',
+      categoryKey: "product.category.squid",
+      sizeNumber: "2.5",
+      sizeLength: "10 cm",
       weight: "10g",
+      sinking: "5.0 s/m",
       image: "assets/images/products/circus2.5.png",
       description:
         'Quando usar um palhaço "rainbow"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      features: [
-        "Agulhas premium BKK",
-        "Fita que brilha no escuro",
-        "Folha arco-íris",
-        "Olhos Laser",
+      featureKeys: [
+        "product.feature.bkk",
+        "product.feature.glow",
+        "product.feature.rainbow",
+        "product.feature.laser",
       ],
     },
     {
       id: 2,
       name: "PROCHOCO PINTAS",
-      category: "Camarão com chumbo visivel",
-      size: '2.5 - 10 cm',
+      categoryKey: "product.category.squid",
+      sizeNumber: "2.5",
+      sizeLength: "10 cm",
       weight: "10g",
+      sinking: "5.0 s/m",
       image: "assets/images/products/pintas2.5.png",
       description:
         'Quando usar um palhaço "rainbow"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      features: [
-        "Agulhas premium BKK",
-        "Fita que brilha no escuro",
-        "Folha arco-íris",
-        "Olhos Laser",
+      featureKeys: [
+        "product.feature.bkk",
+        "product.feature.glow",
+        "product.feature.rainbow",
+        "product.feature.laser",
       ],
     },
     {
       id: 3,
       name: "PROCHOCO CIRCUS",
-      category: "Camarão com chumbo visivel",
-      size: "3.0 - 16 cm",
+      categoryKey: "product.category.squid",
+      sizeNumber: "3.0",
+      sizeLength: "12 cm",
       weight: "16g",
+      sinking: "3.5 s/m",
       image: "assets/images/products/circus3.0.png",
       description:
         'Quando usar um palhaço "rainbow"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      features: [
-        "Agulhas premium BKK",
-        "Fita que brilha no escuro",
-        "Folha arco-íris",
-        "Olhos Laser",
+      featureKeys: [
+        "product.feature.bkk",
+        "product.feature.glow",
+        "product.feature.rainbow",
+        "product.feature.laser",
       ],
     },
     {
       id: 4,
       name: "PROCHOCO PINTAS",
-      category: "Camarão com chumbo visivel",
-      size: "3.0 - 16 cm",
+      categoryKey: "product.category.squid",
+      sizeNumber: "3.0",
+      sizeLength: "12 cm",
       weight: "16g",
+      sinking: "3.5 s/m",
       image: "assets/images/products/pintas3.0.png",
       description:
         'Quando usar um palhaço "rainbow"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      features: [
-        "Agulhas premium BKK",
-        "Fita que brilha no escuro",
-        "Folha arco-íris",
-        "Olhos Laser",
+      featureKeys: [
+        "product.feature.bkk",
+        "product.feature.glow",
+        "product.feature.rainbow",
+        "product.feature.laser",
       ],
     },
   ]);
 
-  constructor(public translate: TranslateService) {}
+  constructor(public translate: TranslateService, private sanitizer: DomSanitizer) {}
 
   categories = computed(() => {
     const uniqueCategories = [
-      ...new Set(this.products().map((p) => p.category)),
+      ...new Set(this.products().map((p) => p.categoryKey)),
     ];
-    return ["All", ...uniqueCategories];
+    return ["all", ...uniqueCategories];
   });
 
   filteredProducts = computed(() => {
-    if (this.selectedCategory() === "All") {
+    if (this.selectedCategory() === "all") {
       return this.products();
     }
     return this.products().filter(
-      (p) => p.category === this.selectedCategory()
+      (p) => p.categoryKey === this.selectedCategory()
     );
   });
 
@@ -479,5 +520,25 @@ export class ProductsComponent {
 
   scrollToContact() {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  getTranslatedCategory(category: string): string {
+    if (category === "all") {
+      return this.translate.getLang() === "en" ? "All" : "Todos";
+    }
+    return this.translate.t(category);
+  }
+
+  getFormattedDescription(text: string) {
+    const lines = text.split("\n").filter(line => line.trim());
+    const html = lines
+      .map((line, index) => {
+        if (index === 0) {
+          return `<div class="desc-question"><strong>${line}</strong></div>`;
+        }
+        return `<div class="desc-line">• ${line}</div>`;
+      })
+      .join("");
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 }

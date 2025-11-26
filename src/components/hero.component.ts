@@ -25,7 +25,14 @@ import { TranslateService } from '../app/services/translate.service';
           </div>
         </div>
     <div class="hero-image">
-          <img src="https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Premium Squid Jigs" class="main-image">
+          <iframe 
+            class="youtube-video"
+            src="https://www.youtube.com/embed/TCt42EKedug?si=4EhuHxD8158wtRmV" 
+            title="PROCHOCO Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+          </iframe>
         </div> 
       </div>
       <div class="hero-features">
@@ -145,6 +152,14 @@ import { TranslateService } from '../app/services/translate.service';
 
     .hero-image {
       position: relative;
+    }
+
+    .youtube-video {
+      width: 100%;
+      height: 400px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: none;
     }
 
     .main-image {

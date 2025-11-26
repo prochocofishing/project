@@ -24,7 +24,13 @@ const pt = {
   "product.viewDetails": "Ver Detalhes",
   "product.spec.size": "Tamanho:",
   "product.spec.weight": "Peso:",
+  "product.spec.sinking": "Afundamento:",
   "product.colorsLabel": "Cores Disponíveis:",
+  "product.category.squid": "Toneira \"palhaço\" com chumbo visível",
+  "product.feature.bkk": "Agulhas premium BKK",
+  "product.feature.glow": "Fita que brilha no escuro",
+  "product.feature.rainbow": "Folha arco-íris",
+  "product.feature.laser": "Olhos Laser",
   
   "footer.products.list": ["Jigs de Alto Mar","Jigs Costeiros","Pesca Noturna","Série para Iniciantes","Grau de Torneio"],
   "footer.company.title": "Empresa",
