@@ -31,6 +31,9 @@ const pt = {
   "product.feature.glow": "Fita que brilha no escuro",
   "product.feature.rainbow": "Folha arco-íris",
   "product.feature.laser": "Olhos Laser",
+  "product.description.rainbow.question": "Quando usar um palhaço \"rainbow\"? (folha arco-íris)",
+  "product.description.rainbow.line1": "Durante o dia, sobretudo quando o sol já está mais alto.",
+  "product.description.rainbow.line2": "É um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
   
   "footer.products.list": ["Jigs de Alto Mar","Jigs Costeiros","Pesca Noturna","Série para Iniciantes","Grau de Torneio"],
   "footer.company.title": "Empresa",

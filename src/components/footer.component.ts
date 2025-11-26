@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { TranslateService } from "../app/services/translate.service";
 import { ConsentService } from "../app/services/consent.service";
 import { AnalyticsService } from "../app/services/analytics.service";
-import { RouterLink } from '@angular/router';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-footer",
@@ -21,17 +21,60 @@ import { RouterLink } from '@angular/router';
               {{ translate.t("footer.brand.description") }}
             </p>
             <div class="social-links">
-              <a href="https://www.facebook.com/profile.php?id=61577095214540" target="_blank" rel="noopener noreferrer" class="social-link facebook" aria-label="Facebook">
-                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
+              <a
+                href="https://www.facebook.com/profile.php?id=61577095214540"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link facebook"
+                aria-label="Facebook"
+              >
+                <svg
+                  role="img"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="false"
+                >
                   <title>Facebook</title>
-                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.85 7.94 9.8v-6.93H7.9V12h2.04V9.8c0-2.02 1.2-3.14 3.03-3.14.88 0 1.8.16 1.8.16v1.98h-1.01c-.99 0-1.3.62-1.3 1.25V12h2.22l-.36 2.87h-1.86v6.93C18.56 20.85 22 16.84 22 12z" />
+                  <path
+                    d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.85 7.94 9.8v-6.93H7.9V12h2.04V9.8c0-2.02 1.2-3.14 3.03-3.14.88 0 1.8.16 1.8.16v1.98h-1.01c-.99 0-1.3.62-1.3 1.25V12h2.22l-.36 2.87h-1.86v6.93C18.56 20.85 22 16.84 22 12z"
+                  />
+                </svg>
+              </a>
+              <a
+                href="https://www.instagram.com/prochoco.fishing/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link instagram"
+                aria-label="Instagram"
+              >
+                <svg
+                  role="img"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="false"
+                >
+                  <title>Instagram</title>
+                 <path d="M12 2.2c3.17 0 3.56.01 4.82.07 1.17.05 1.97.24 2.43.4a4.9 4.9 0 0 1 1.77 1.15 4.9 4.9 0 0 1 1.15 1.77c.16.46.35 1.26.4 2.43.06 1.26.07 1.65.07 4.82s-.01 3.56-.07 4.82c-.05 1.17-.24 1.97-.4 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.46.16-1.26.35-2.43.4-1.26.06-1.65.07-4.82.07s-3.56-.01-4.82-.07c-1.17-.05-1.97-.24-2.43-.4a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.16-.46-.35-1.26-.4-2.43C2.21 15.56 2.2 15.17 2.2 12s.01-3.56.07-4.82c.05-1.17.24-1.97.4-2.43A4.9 4.9 0 0 1 3.82 2.98 4.9 4.9 0 0 1 5.6 1.83c.46-.16 1.26-.35 2.43-.4C9.29 1.36 9.68 1.35 12 1.35zm0 3.1a5.55 5.55 0 1 0 0 11.1 5.55 5.55 0 0 0 0-11.1zm6.35-1.42a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6z"/>
                 </svg>
               </a>
               <!-- <a href="#" class="social-link" aria-label="Instagram">📷</a> -->
-              <a href="https://www.youtube.com/@PROCHOCO-FISHING" target="_blank" rel="noopener noreferrer" class="social-link youtube" aria-label="YouTube">
-                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="false">
+              <a
+                href="https://www.youtube.com/@PROCHOCO-FISHING"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-link youtube"
+                aria-label="YouTube"
+              >
+                <svg
+                  role="img"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="false"
+                >
                   <title>YouTube</title>
-                  <path d="M23.5 6.2c-.3-1.1-1.2-2-2.3-2.2C18.4 3.5 12 3.5 12 3.5s-6.4 0-9.2.5C1.7 4.2.8 5.1.5 6.2.1 7.9 0 10 0 10s0 2.1.5 3.8c.3 1.1 1.2 2 2.3 2.2 2.8.5 9.2.5 9.2.5s6.4 0 9.2-.5c1.1-.2 2-.9 2.3-2.2.5-1.7.5-3.8.5-3.8s0-2.1-.5-3.8zM9.8 13.5V6.5l6.2 3.5-6.2 3.5z" />
+                  <path
+                    d="M23.5 6.2c-.3-1.1-1.2-2-2.3-2.2C18.4 3.5 12 3.5 12 3.5s-6.4 0-9.2.5C1.7 4.2.8 5.1.5 6.2.1 7.9 0 10 0 10s0 2.1.5 3.8c.3 1.1 1.2 2 2.3 2.2 2.8.5 9.2.5 9.2.5s6.4 0 9.2-.5c1.1-.2 2-.9 2.3-2.2.5-1.7.5-3.8.5-3.8s0-2.1-.5-3.8zM9.8 13.5V6.5l6.2 3.5-6.2 3.5z"
+                  />
                 </svg>
               </a>
             </div>
@@ -56,10 +99,16 @@ import { RouterLink } from '@angular/router';
           <div class="footer-bottom-content">
             <p>{{ copyright }}</p>
             <div class="footer-bottom-links">
-              <a [routerLink]="['/privacy']">{{ translate.t("footer.privacy") }}</a>
+              <a [routerLink]="['/privacy']">{{
+                translate.t("footer.privacy")
+              }}</a>
               <a [routerLink]="['/terms']">{{ translate.t("footer.terms") }}</a>
-              <a [routerLink]="['/cookies']">{{ translate.t("footer.cookies") }}</a>
-              <a href="#" (click)="optOut($event)">{{ translate.t('footer.optout') }}</a>
+              <a [routerLink]="['/cookies']">{{
+                translate.t("footer.cookies")
+              }}</a>
+              <a href="#" (click)="optOut($event)">{{
+                translate.t("footer.optout")
+              }}</a>
             </div>
           </div>
         </div>
@@ -150,24 +199,35 @@ import { RouterLink } from '@angular/router';
 
       /* Brand-specific defaults */
       .social-link.facebook {
-        color: #1877F2; /* Facebook blue */
+        color: #1877f2; /* Facebook blue */
         background: rgba(24, 119, 242, 0.08);
       }
 
+      .social-link.instagram {
+        color: #e1306c; /* Instagram pink */
+        background: rgba(225, 48, 108, 0.08);
+      }
+
       .social-link.youtube {
-        color: #FF0000; /* YouTube red */
+        color: #ff0000; /* YouTube red */
         background: rgba(255, 0, 0, 0.06);
       }
 
       /* Hover: brand background with white icon */
       .social-link.facebook:hover {
-        background: #1877F2;
+        background: #1877f2;
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .social-link.instagram:hover {
+        background: linear-gradient(45deg, #e1306c, #c13584);
         color: #fff;
         transform: translateY(-2px);
       }
 
       .social-link.youtube:hover {
-        background: #FF0000;
+        background: #ff0000;
         color: #fff;
         transform: translateY(-2px);
       }
@@ -287,7 +347,11 @@ import { RouterLink } from '@angular/router';
   ],
 })
 export class FooterComponent {
-  constructor(public translate: TranslateService, public consent: ConsentService, private analytics: AnalyticsService) {}
+  constructor(
+    public translate: TranslateService,
+    public consent: ConsentService,
+    private analytics: AnalyticsService
+  ) {}
 
   optOut(event: Event) {
     event.preventDefault();
@@ -295,15 +359,17 @@ export class FooterComponent {
     this.analytics.optOut();
     // reload shortly to ensure cookies/trackers are cleared from page context
     setTimeout(() => {
-      try { location.reload(); } catch (e) {}
+      try {
+        location.reload();
+      } catch (e) {}
     }, 300);
   }
 
   get copyright() {
-    const tpl = this.translate.t('footer.copyright');
+    const tpl = this.translate.t("footer.copyright");
     const year = String(new Date().getFullYear());
-    if (typeof tpl === 'string') {
-      return tpl.replace('{year}', year);
+    if (typeof tpl === "string") {
+      return tpl.replace("{year}", year);
     }
     return tpl;
   }
