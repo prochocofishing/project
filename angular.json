@@ -38,9 +38,7 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "outputPath": "dist/prochoco",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "scripts": [],
             "styles": [
               "src/global_styles.css"

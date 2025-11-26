@@ -398,7 +398,7 @@ export class ProductsComponent {
         "Agulhas premium BKK",
         "Fita que brilha no escuro",
         "Folha arco-íris",
-        "Olhos Lazer",
+        "Olhos Laser",
       ],
     },
     {
@@ -414,7 +414,7 @@ export class ProductsComponent {
         "Agulhas premium BKK",
         "Fita que brilha no escuro",
         "Folha arco-íris",
-        "Olhos Lazer",
+        "Olhos Laser",
       ],
     },
     {
@@ -430,7 +430,7 @@ export class ProductsComponent {
         "Agulhas premium BKK",
         "Fita que brilha no escuro",
         "Folha arco-íris",
-        "Olhos Lazer",
+        "Olhos Laser",
       ],
     },
     {
@@ -446,7 +446,7 @@ export class ProductsComponent {
         "Agulhas premium BKK",
         "Fita que brilha no escuro",
         "Folha arco-íris",
-        "Olhos Lazer",
+        "Olhos Laser",
       ],
     },
   ]);

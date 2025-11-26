@@ -51,6 +51,45 @@ const pt = {
   "contact.sending": "A enviar...",
   "contact.thanks": "Obrigado! Respondemos dentro de 24 horas.",
   "contact.error": "Erro ao enviar. Tente novamente mais tarde."
+
+  ,"consent.title": "Privacidade",
+  "consent.description": "Usamos cookies para fins de analytics. Aceita que ativemos o Google Analytics para melhorar o site?",
+  "consent.accept": "Aceitar",
+  "consent.decline": "Recusar"
+  ,"footer.optout": "Desativar Analytics"
+  ,"privacy.title": "Política de Privacidade",
+  "privacy.intro": "Nesta página explicamos que dados recolhemos, porque o fazemos e como podes contactar-nos.",
+  "privacy.dataCollectedTitle": "Que dados recolhemos",
+  "privacy.dataCollected": "Podemos recolher dados de navegação, cookies (analytics) e informações que nos forneces quando contactas via formulário.",
+  "privacy.contactTitle": "Contacto",
+  "privacy.contact": "Se tiveres questões sobre privacidade, escreve para prochocofishing@gmail.com"
+
+  ,"terms.title": "Termos de Serviço",
+  "terms.lastUpdated": "Última atualização: Novembro 2025",
+  "terms.acceptanceTitle": "Aceitação dos Termos",
+  "terms.acceptance": "Ao aceder e usar este site, aceitas estes termos de serviço. Se não concordas, por favor não utilizes o site.",
+  "terms.useTitle": "Uso Permitido",
+  "terms.use": "Este site é fornecido apenas para informação. Não podes usar este site para fins ilegais ou ilícitos, ou de qualquer forma que viole os direitos de outros.",
+  "terms.ipTitle": "Direitos de Propriedade Intelectual",
+  "terms.ip": "Todo o conteúdo neste site (texto, imagens, logótipos, etc.) é propriedade da PROCHOCO. Não podes reproduzir, distribuir ou transmitir conteúdo sem autorização escrita.",
+  "terms.liabilityTitle": "Limitação de Responsabilidade",
+  "terms.liability": "A PROCHOCO não será responsável por danos diretos, indiretos ou consequentes resultantes do uso ou incapacidade de usar este site.",
+  "terms.contactTitle": "Contacto",
+  "terms.contact": "Para questões sobre estes termos, contacta-nos em prochocofishing@gmail.com"
+
+  ,"cookies.title": "Política de Cookies",
+  "cookies.lastUpdated": "Última atualização: Novembro 2025",
+  "cookies.whatAreTitle": "O que são cookies?",
+  "cookies.whatAre": "Cookies são pequenos ficheiros de texto armazenados no teu navegador. Usamos cookies para melhorar a experiência do utilizador e recolher informações analíticas.",
+  "cookies.whyUseTitle": "Por que usamos cookies?",
+  "cookies.whyUse": "Utilizamos cookies para entender como os utilizadores interagem com o site, rastrear o desempenho e melhorar os nossos serviços.",
+  "cookies.typesTitle": "Tipos de Cookies",
+  "cookies.types": "Google Analytics: Recolhemos dados de navegação de forma anónima. Apenas carregamos este cookie após o teu consentimento explícito.",
+  "cookies.consentTitle": "Consentimento",
+  "cookies.consent": "Não carregamos cookies de analytics sem o teu consentimento prévio. Podes desativar analytics a qualquer momento clicando em 'Desativar Analytics'.",
+  "cookies.contactTitle": "Contacto",
+  "cookies.contact": "Se tiveres questões sobre cookies, escreve para prochocofishing@gmail.com"
 };
 
 export default pt;
+

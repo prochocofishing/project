@@ -1,11 +1,14 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TranslateService } from "../app/services/translate.service";
+import { ConsentService } from "../app/services/consent.service";
+import { AnalyticsService } from "../app/services/analytics.service";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: "app-footer",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <footer class="footer">
       <div class="container">
@@ -53,9 +56,10 @@ import { TranslateService } from "../app/services/translate.service";
           <div class="footer-bottom-content">
             <p>{{ copyright }}</p>
             <div class="footer-bottom-links">
-              <a href="#">{{ translate.t("footer.privacy") }}</a>
-              <a href="#">{{ translate.t("footer.terms") }}</a>
-              <a href="#">{{ translate.t("footer.cookies") }}</a>
+              <a [routerLink]="['/privacy']">{{ translate.t("footer.privacy") }}</a>
+              <a [routerLink]="['/terms']">{{ translate.t("footer.terms") }}</a>
+              <a [routerLink]="['/cookies']">{{ translate.t("footer.cookies") }}</a>
+              <a href="#" (click)="optOut($event)">{{ translate.t('footer.optout') }}</a>
             </div>
           </div>
         </div>
@@ -283,7 +287,17 @@ import { TranslateService } from "../app/services/translate.service";
   ],
 })
 export class FooterComponent {
-  constructor(public translate: TranslateService) {}
+  constructor(public translate: TranslateService, public consent: ConsentService, private analytics: AnalyticsService) {}
+
+  optOut(event: Event) {
+    event.preventDefault();
+    this.consent.revokeConsent();
+    this.analytics.optOut();
+    // reload shortly to ensure cookies/trackers are cleared from page context
+    setTimeout(() => {
+      try { location.reload(); } catch (e) {}
+    }, 300);
+  }
 
   get copyright() {
     const tpl = this.translate.t('footer.copyright');
