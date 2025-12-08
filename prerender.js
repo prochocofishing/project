@@ -61,7 +61,24 @@ const routes = baseRoutes.concat(loadProductAnchors());
 
   console.log(`Prerendering routes from ${base} → ${outDir}`);
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  // Create a context so we can set an init script that runs before any page scripts.
+  const context = await browser.newContext();
+
+  // During prerender we want the consent banner hidden so snapshots contain
+  // the real page content. By default set the same storage key used by the
+  // app to 'granted'. Set PRERENDER_ACCEPT_CONSENT=false to opt out.
+  const acceptConsent = (process.env.PRERENDER_ACCEPT_CONSENT || '').toLowerCase() !== 'false';
+  if (acceptConsent) {
+    await context.addInitScript(() => {
+      try {
+        localStorage.setItem('prochoco_analytics_consent', 'granted');
+      } catch (e) {
+        // ignore
+      }
+    });
+  }
+
+  const page = await context.newPage();
   let failures = 0;
 
   for (const route of routes) {

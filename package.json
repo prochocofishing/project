@@ -10,6 +10,7 @@
     "prerender": "node prerender.js",
     "prerender:install-browsers": "npx playwright install --with-deps",
     "build:static": "npm run build:prod && npm run prerender",
+    "deploy:prerender": "node scripts/deploy-prerender.js",
     "generate-sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
