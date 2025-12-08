@@ -19,6 +19,10 @@ const en = {
   "feature.wholesale.desc": "Competitive rates for retailers",
 
   "products.title": "Our Product Catalog",
+  "title.home": "Home",
+  "title.privacy": "Privacy Policy",
+  "title.terms": "Terms of Service",
+  "title.cookies": "Cookie Policy",
   "products.cta.title": "Ready to Stock Our Products?",
   "products.cta.text": "Contact us for wholesale pricing and minimum order quantities",
   "products.cta.button": "Get Wholesale Pricing",
@@ -65,7 +69,8 @@ const en = {
   "contact.error": "Failed to send. Please try again later."
 
   ,"consent.title": "Privacy",
-  "consent.description": "We use cookies for analytics. Do you consent to enabling Google Analytics to help improve this site?",
+  "consent.description": "We use first- and third-party cookies to offer you a better experience and service. To learn which cookies we use and how to disable them, read the Cookie Policy. To continue, please choose 'Accept' or 'Decline'.",
+  "consent.policy_link_text": "Read Cookie Policy",
   "consent.accept": "Accept",
   "consent.decline": "Decline"
   ,"footer.optout": "Disable Analytics"

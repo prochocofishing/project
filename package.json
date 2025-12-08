@@ -4,9 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "build:prod": "ng build --configuration production",
-    "deploy": "npm run build:prod && npx angular-cli-ghpages --dir=dist/prochoco"
+    "build": "npm run generate-sitemap && ng build",
+    "build:prod": "npm run generate-sitemap && ng build --configuration production",
+    "deploy": "npm run build:prod && npx angular-cli-ghpages --dir=dist/prochoco",
+    "prerender": "node prerender.js",
+    "prerender:install-browsers": "npx playwright install --with-deps",
+    "build:static": "npm run build:prod && npm run prerender",
+    "generate-sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
     "@angular/animations": "^20.2.1",
@@ -23,6 +27,7 @@
     "@angular-devkit/build-angular": "^20.2.0",
     "@angular/cli": "^20.2.0",
     "@angular/compiler-cli": "^20.2.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "playwright": "^1.35.0"
   }
 }

@@ -17,6 +17,10 @@ const pt = {
   "feature.wholesale.desc": "Tabelas competitivas para retalhistas",
 
   "products.title": "Catálogo de Produtos",
+  "title.home": "Início",
+  "title.privacy": "Política de Privacidade",
+  "title.terms": "Termos de Serviço",
+  "title.cookies": "Política de Cookies",
   "products.cta.title": "Pronto para Ter os Nossos Produtos?",
   "products.cta.text": "Contacte-nos para preços por grosso e quantidades mínimas de encomenda",
   "products.cta.button": "Obter Preços por Grosso",
@@ -62,7 +66,8 @@ const pt = {
   "contact.error": "Erro ao enviar. Tente novamente mais tarde."
 
   ,"consent.title": "Privacidade",
-  "consent.description": "Usamos cookies para fins de analytics. Aceita que ativemos o Google Analytics para melhorar o site?",
+  "consent.description": "Utilizamos cookies próprios e de terceiros para lhe oferecer uma melhor experiência e serviço. Para saber quais cookies usamos e como os desativar, leia a Política de Cookies. Para continuar, por favor escolha 'Aceitar' ou 'Recusar'.",
+  "consent.policy_link_text": "Ler Política de Cookies",
   "consent.accept": "Aceitar",
   "consent.decline": "Recusar"
   ,"footer.optout": "Desativar Analytics"

@@ -9,13 +9,16 @@ import { TranslateService } from '../app/services/translate.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div *ngIf="visible" class="consent-banner" role="dialog" aria-live="polite">
-      <div class="consent-inner">
-        <div class="consent-text">
-          <strong>{{ translate.t('consent.title') }}</strong>
-          <p>{{ translate.t('consent.description') }}</p>
+    <div *ngIf="visible" class="consent-overlay" role="dialog" aria-modal="true" aria-labelledby="consent-title">
+      <div class="consent-panel" role="document">
+        <div class="consent-header">
+          <h3 id="consent-title">{{ translate.t('consent.title') }}</h3>
         </div>
-        <div class="consent-actions">
+        <div class="consent-body">
+          <p class="consent-desc">{{ translate.t('consent.description') }}</p>
+          <p class="consent-note"><a href="/cookies" target="_blank" rel="noopener noreferrer" (click)="openPolicy($event)">{{ translate.t('consent.policy_link_text') }}</a></p>
+        </div>
+        <div class="consent-footer">
           <button class="btn btn-secondary" (click)="decline()">{{ translate.t('consent.decline') }}</button>
           <button class="btn btn-primary" (click)="accept()">{{ translate.t('consent.accept') }}</button>
         </div>
@@ -24,35 +27,40 @@ import { TranslateService } from '../app/services/translate.service';
   `,
   styles: [
     `
-    .consent-banner {
+    .consent-overlay {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 16px;
-      display: flex;
-      justify-content: center;
-      z-index: 9999;
-      padding: 0 1rem;
-    }
-    .consent-inner {
-      max-width: 1100px;
-      background: rgba(15, 23, 42, 0.96);
-      color: #e6eef8;
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
+      inset: 0;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+      justify-content: center;
+      background: rgba(2,6,23,0.6);
+      z-index: 10000;
+      padding: 1rem;
     }
-    .consent-text p { margin: 0.25rem 0 0 0; color: #cbd5e1; }
-    .consent-actions { display: flex; gap: 0.5rem; }
-    .btn { padding: 0.5rem 0.75rem; border-radius: 8px; border: none; cursor: pointer; }
+    .consent-panel {
+      width: 100%;
+      max-width: 720px;
+      background: linear-gradient(180deg, #0b1220, #0f172a);
+      color: #e6eef8;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(2,6,23,0.7);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .consent-header h3 { margin: 0; color: #f1f5f9; font-size: 1.25rem; }
+    .consent-desc { color: #cbd5e1; margin: 0; line-height: 1.5; }
+    .consent-note { margin: 0; color: #9fb4d6; font-size: 0.95rem; }
+    .consent-note a { color: #60a5fa; text-decoration: underline; }
+    .consent-footer { display:flex; justify-content: flex-end; gap: 0.75rem; }
+    .btn { padding: 0.6rem 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
     .btn-primary { background: linear-gradient(45deg,#3b82f6,#06b6d4); color: white; }
     .btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.06); }
     @media (max-width: 640px) {
-      .consent-inner { flex-direction: column; align-items: stretch; }
-      .consent-actions { justify-content: flex-end; }
+      .consent-panel { padding: 1rem; }
+      .consent-footer { justify-content: stretch; }
+      .btn { width: 100%; }
     }
     `,
   ],
@@ -72,5 +80,19 @@ export class ConsentBannerComponent {
   decline() {
     this.consent.setConsent(false);
     this.analytics.optOut();
+  }
+
+  openPolicy(event: Event) {
+    // Open the cookie policy in a new tab so users can read it without
+    // having to accept/decline the modal. Prevent default to ensure a new
+    // tab is used even in SPA routing contexts.
+    try {
+      event.preventDefault();
+      // Use absolute path to be safe
+      const url = '/cookies';
+      window.open(url, '_blank', 'noopener');
+    } catch (e) {
+      // Fallback: do nothing, browser default will navigate
+    }
   }
 }

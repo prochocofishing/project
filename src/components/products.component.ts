@@ -43,6 +43,7 @@ interface Product {
         <div class="products-grid">
           @for (product of filteredProducts(); track product.id) {
           <div
+            id="product-{{product.id}}"
             class="product-card"
             (mouseenter)="setHoveredProduct(product.id)"
             (mouseleave)="setHoveredProduct(null)"
@@ -85,6 +86,7 @@ interface Product {
                 </div>
                 }
               </div>
+              <script type="application/ld+json" [innerHTML]="getProductJsonLd(product)"></script>
             </div>
           </div>
           }
@@ -540,5 +542,34 @@ export class ProductsComponent {
       })
       .join("");
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  getProductJsonLd(product: Product) {
+    try {
+      const imageUrl = (typeof window !== 'undefined' && window.location)
+        ? new URL(product.image, window.location.origin).href
+        : product.image;
+      const pageUrl = (typeof window !== 'undefined' && window.location)
+        ? `${window.location.origin}${window.location.pathname}#product-${product.id}`
+        : `https://www.prochoco.com/#product-${product.id}`;
+
+      const json: any = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": [imageUrl],
+        "description": product.description.replace(/\n/g, ' '),
+        "sku": String(product.id),
+        "brand": {
+          "@type": "Brand",
+          "name": "PROCHOCO"
+        },
+        "url": pageUrl,
+        "category": this.translate?.t(product.categoryKey) || product.categoryKey
+      };
+      return this.sanitizer.bypassSecurityTrustHtml(JSON.stringify(json));
+    } catch (e) {
+      return this.sanitizer.bypassSecurityTrustHtml('{}');
+    }
   }
 }

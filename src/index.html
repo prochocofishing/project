@@ -14,6 +14,15 @@
   <meta property="og:url" content="https://www.prochoco.com/" />
   <meta property="og:type" content="website" />
   
+  <!-- SEO basics -->
+  <meta name="description" content="PROCHOCO - Premium squid jigs and fishing lures. Wholesale pricing for retailers; high-quality, durable jigs optimized for both coastal and deep-sea fishing." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.prochoco.com/" />
+
+  <!-- Hreflang for supported languages -->
+  <link rel="alternate" href="https://www.prochoco.com/" hreflang="pt-PT" />
+  <link rel="alternate" href="https://www.prochoco.com/en/" hreflang="en" />
+  
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="PROCHOCO SQUID JIGS" />
@@ -24,6 +33,47 @@
   <link rel="icon" type="image/png" href="assets/images/logo2.png" />
   <link rel="shortcut icon" type="image/png" href="assets/images/logo2.png" />
   <link rel="apple-touch-icon" href="assets/images/logo2.png" />
+  
+  <!-- Organization structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PROCHOCO",
+    "url": "https://www.prochoco.com/",
+    "logo": "https://www.prochoco.com/assets/images/logo2.png",
+    "contactPoint": [{
+      "@type": "ContactPoint",
+      "telephone": "",
+      "contactType": "customer support",
+      "email": "prochocofishing@gmail.com"
+    }],
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61577095214540",
+      "https://www.instagram.com/prochoco.fishing/",
+      "https://www.youtube.com/@PROCHOCO-FISHING"
+    ]
+  }
+  </script>
+  <!-- WebSite structured data for site search and discovery -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "PROCHOCO",
+    "url": "https://www.prochoco.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.prochoco.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Expose a machine-readable product feed to help crawlers and LLMs -->
+  <link rel="alternate" type="application/json" href="/assets/products.json" />
+  <!-- Root sitemap link (recommended to host sitemap.xml at site root) -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 </head>
 
 <body>
