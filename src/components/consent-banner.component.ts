@@ -16,7 +16,6 @@ import { TranslateService } from '../app/services/translate.service';
         </div>
         <div class="consent-body">
           <p class="consent-desc">{{ translate.t('consent.description') }}</p>
-          <p class="consent-note"><a href="/cookies" target="_blank" rel="noopener noreferrer" (click)="openPolicy($event)">{{ translate.t('consent.policy_link_text') }}</a></p>
         </div>
         <div class="consent-footer">
           <button class="btn btn-secondary" (click)="decline()">{{ translate.t('consent.decline') }}</button>
