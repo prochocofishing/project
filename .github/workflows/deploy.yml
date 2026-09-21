@@ -1,0 +1,80 @@
+name: Build, Prerender and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate sitemap
+        run: npm run generate-sitemap
+
+      - name: Build production bundle
+        run: npm run build:prod
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Start static server (background)
+        run: |
+          npx http-server ./dist/prochoco -p 8080 &
+          sleep 3
+        shell: bash
+
+      - name: Prerender (Playwright)
+        env:
+          BASE_URL: http://localhost:8080
+        run: |
+          npm run prerender
+        shell: bash
+
+      - name: Upload prerendered snapshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: prerendered
+          path: prerendered
+
+      - name: Copy static assets into prerendered
+        run: |
+          echo "Copying static assets from dist/prochoco into prerendered..."
+          mkdir -p prerendered
+          # Use rsync when available to exclude HTML files
+          if command -v rsync >/dev/null 2>&1; then
+            rsync -av --exclude='*.html' dist/prochoco/ prerendered/
+          else
+            # Fallback: copy everything and then remove HTML files
+            cp -r dist/prochoco/* prerendered/ || true
+            find prerendered -type f -name '*.html' -delete || true
+          fi
+
+      - name: Copy CNAME into prerendered
+        run: |
+          if [ -f src/CNAME.txt ]; then cp src/CNAME.txt prerendered/CNAME; fi
+        shell: bash
+
+      - name: Copy CNAME into built site
+        run: |
+          if [ -f src/CNAME.txt ]; then cp src/CNAME.txt dist/prochoco/CNAME; fi
+        shell: bash
+
+      - name: Deploy prerendered to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./prerendered
+          cname: 'www.prochoco.com'
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'

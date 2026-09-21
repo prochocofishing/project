@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
- 
+import { TranslateService } from '../app/services/translate.service';
+
 @Component({
   selector: 'app-about',
   standalone: true,
@@ -10,87 +11,11 @@ import { CommonModule } from '@angular/common';
       <div class="container">
         <div class="about-grid">
           <div class="about-content">
-            <h2 class="section-title">About PROCHOCO</h2>
-            <p class="intro-text">
-              Founded by passionate anglers, PROCHOCO has been crafting premium squid jigs 
-              for over 5 years. Our commitment to quality and performance has made us a 
-              trusted partner for fishing stores worldwide.
-            </p>
-            
-            <div class="story-content">
-              <h3>Our Story</h3>
-              <p>
-                What started as a small passion project among fishing enthusiasts has grown 
-                into a leading brand in the squid fishing industry. We understand that every 
-                cast matters, which is why we put meticulous attention to detail into every 
-                jig we create.
-              </p>
-              
-              <h3>Our Mission</h3>
-              <p>
-                To provide fishing stores with the highest quality squid jigs that deliver 
-                consistent results for their customers. We believe in building lasting 
-                partnerships through reliable products and exceptional service.
-              </p>
-            </div>
-
-            <div class="values-grid">
-              <div class="value-item">
-                <div class="value-icon">🏆</div>
-                <h4>Quality First</h4>
-                <p>Every jig undergoes rigorous testing</p>
-              </div>
-              <div class="value-item">
-                <div class="value-icon">🤝</div>
-                <h4>Partnership</h4>
-                <p>We support our retail partners' success</p>
-              </div>
-              <div class="value-item">
-                <div class="value-icon">🎣</div>
-                <h4>Innovation</h4>
-                <p>Constantly improving our designs</p>
-              </div>
-            </div>
+            <h2 class="section-title">{{ translate.t('about.title') }}</h2>
+            <p class="intro-text">{{ translate.t('about.paragraph') }}</p>
           </div>
-
-          <div class="about-stats">
-            <div class="stats-card">
-              <h3>Why Choose PROCHOCO?</h3>
-              
-              <div class="stat-item">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">Unique Jig Models</div>
-                <div class="stat-desc">Diverse range for all fishing conditions</div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-number">200+</div>
-                <div class="stat-label">Retail Partners</div>
-                <div class="stat-desc">Fishing stores worldwide trust our products</div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-number">98%</div>
-                <div class="stat-label">Satisfaction Rate</div>
-                <div class="stat-desc">Based on retailer feedback surveys</div>
-              </div>
-
-              <div class="certifications">
-                <h4>Quality Certifications</h4>
-                <div class="cert-badges">
-                  <div class="badge">ISO 9001</div>
-                  <div class="badge">RoHS Compliant</div>
-                  <div class="badge">CE Marked</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="team-image">
-              <img src="https://images.pexels.com/photos/3184639/pexels-photo-3184639.jpeg?auto=compress&cs=tinysrgb&w=500&h=400&fit=crop" alt="PROCHOCO Team">
-              <div class="image-overlay">
-                <p>Our dedicated team of fishing experts</p>
-              </div>
-            </div>
+          <div class="mascot-container">
+            <img src="assets/images/logomascot.png" alt="PROCHOCO Mascot" class="mascot-image-full" />
           </div>
         </div>
       </div>
@@ -111,7 +36,23 @@ import { CommonModule } from '@angular/common';
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
-      align-items: start;
+      align-items: center;
+    }
+
+    .mascot-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .mascot-image-full {
+      width: 100%;
+      height: auto;
+      max-width: 400px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+      border-radius: 16px;
     }
 
     .section-title {
@@ -313,4 +254,5 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class AboutComponent {
+  constructor(public translate: TranslateService) {}
 }

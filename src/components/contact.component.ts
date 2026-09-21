@@ -1,193 +1,53 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../environments/environment';
+import { TranslateService } from '../app/services/translate.service';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <section id="contact" class="contact-section">
+    <!-- <section id="contact" class="contact-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Get In Touch</h2>
-          <p class="section-subtitle">
-            Ready to partner with PROCHOCO? Contact us for wholesale pricing and product information
-          </p>
+          <h2 class="section-title">{{ translate.t('contact.title') }}</h2>
+          <p class="section-subtitle">{{ translate.t('contact.subtitle') }}</p>
         </div>
 
         <div class="contact-grid">
-          <div class="contact-info">
-            <h3>Contact Information</h3>
-            
-            <div class="contact-item">
-              <div class="contact-icon">📧</div>
-              <div class="contact-details">
-                <h4>Email</h4>
-                <p>wholesale@prochoco.com</p>
-                <p>info&#64;prochoco.com</p>
-              </div>
-            </div>
-
-            <div class="contact-item">
-              <div class="contact-icon">📱</div>
-              <div class="contact-details">
-                <h4>Phone</h4>
-                <p>+1 (555) 123-4567</p>
-                <p>Monday - Friday: 8AM - 6PM EST</p>
-              </div>
-            </div>
-
-            <div class="contact-item">
-              <div class="contact-icon">📍</div>
-              <div class="contact-details">
-                <h4>Address</h4>
-                <p>123 Marine Drive</p>
-                <p>Fishing Harbor, FL 33101</p>
-              </div>
-            </div>
-
-            <div class="business-info">
-              <h4>Business Information</h4>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Min Order:</span>
-                  <span class="info-value">$500</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Payment Terms:</span>
-                  <span class="info-value">Net 30</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Shipping:</span>
-                  <span class="info-value">Free over $1000</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Lead Time:</span>
-                  <span class="info-value">5-7 days</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div class="contact-form-container">
             <form class="contact-form" (ngSubmit)="submitForm()" #contactForm="ngForm">
-              <h3>Wholesale Inquiry</h3>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="firstName">First Name *</label>
-                  <input 
-                    type="text" 
-                    id="firstName" 
-                    name="firstName"
-                    [(ngModel)]="formData().firstName"
-                    required
-                    class="form-input">
-                </div>
-                <div class="form-group">
-                  <label for="lastName">Last Name *</label>
-                  <input 
-                    type="text" 
-                    id="lastName" 
-                    name="lastName"
-                    [(ngModel)]="formData().lastName"
-                    required
-                    class="form-input">
-                </div>
+              <h3>{{ translate.t('contact.title') }}</h3>
+
+              <div class="form-group">
+                <label for="name">{{ translate.t('contact.name') }}</label>
+                <input type="text" id="name" name="name" [(ngModel)]="formData().name" required class="form-input">
               </div>
 
               <div class="form-group">
-                <label for="storeName">Store Name *</label>
-                <input 
-                  type="text" 
-                  id="storeName" 
-                  name="storeName"
-                  [(ngModel)]="formData().storeName"
-                  required
-                  class="form-input">
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="email">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email"
-                    [(ngModel)]="formData().email"
-                    required
-                    class="form-input">
-                </div>
-                <div class="form-group">
-                  <label for="phone">Phone</label>
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone"
-                    [(ngModel)]="formData().phone"
-                    class="form-input">
-                </div>
+                <label for="storeName">{{ translate.t('contact.store') }}</label>
+                <input type="text" id="storeName" name="storeName" [(ngModel)]="formData().storeName" required class="form-input">
               </div>
 
               <div class="form-group">
-                <label for="storeType">Store Type</label>
-                <select 
-                  id="storeType" 
-                  name="storeType"
-                  [(ngModel)]="formData().storeType"
-                  class="form-input">
-                  <option value="">Select Store Type</option>
-                  <option value="fishing-specialty">Fishing Specialty Store</option>
-                  <option value="sporting-goods">Sporting Goods Store</option>
-                  <option value="marine-supply">Marine Supply Store</option>
-                  <option value="online-retailer">Online Retailer</option>
-                  <option value="other">Other</option>
-                </select>
+                <label for="email">{{ translate.t('contact.email') }}</label>
+                <input type="email" id="email" name="email" [(ngModel)]="formData().email" required class="form-input">
               </div>
 
               <div class="form-group">
-                <label for="interest">Products of Interest</label>
-                <div class="checkbox-group">
-                  <label class="checkbox-item">
-                    <input type="checkbox" [(ngModel)]="formData().interests.deepSea" name="deepSea">
-                    <span class="checkmark"></span>
-                    Deep Sea Jigs
-                  </label>
-                  <label class="checkbox-item">
-                    <input type="checkbox" [(ngModel)]="formData().interests.coastal" name="coastal">
-                    <span class="checkmark"></span>
-                    Coastal Jigs
-                  </label>
-                  <label class="checkbox-item">
-                    <input type="checkbox" [(ngModel)]="formData().interests.night" name="night">
-                    <span class="checkmark"></span>
-                    Night Fishing Jigs
-                  </label>
-                  <label class="checkbox-item">
-                    <input type="checkbox" [(ngModel)]="formData().interests.beginner" name="beginner">
-                    <span class="checkmark"></span>
-                    Beginner Series
-                  </label>
-                </div>
+                <label for="message">{{ translate.t('contact.message') }}</label>
+                <textarea id="message" name="message" [(ngModel)]="formData().message" rows="5" class="form-input"></textarea>
               </div>
 
-              <div class="form-group">
-                <label for="message">Message</label>
-                <textarea 
-                  id="message" 
-                  name="message"
-                  [(ngModel)]="formData().message"
-                  rows="4"
-                  placeholder="Tell us about your store and your squid jig needs..."
-                  class="form-input"></textarea>
-              </div>
+     
+              <input type="text" name="hp" [(ngModel)]="formData().hp" style="display:none" autocomplete="off">
 
-              <button 
-                type="submit" 
-                class="submit-btn"
-                [disabled]="!contactForm.form.valid || isSubmitting()">
-                {{ isSubmitting() ? 'Sending...' : 'Send Inquiry' }}
+              <input type="hidden" name="ts" [value]="formData().ts">
+
+              <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+                {{ isSubmitting() ? translate.t('contact.sending') : translate.t('contact.send') }}
               </button>
 
               <div *ngIf="submitMessage()" class="submit-message" [class.success]="submitSuccess()">
@@ -197,7 +57,7 @@ import { FormsModule } from '@angular/forms';
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
   `,
   styles: [`
     .contact-section {
@@ -211,7 +71,6 @@ import { FormsModule } from '@angular/forms';
     }
 
     .section-header {
-      text-align: center;
       margin-bottom: 4rem;
     }
 
@@ -226,7 +85,6 @@ import { FormsModule } from '@angular/forms';
       font-size: 1.25rem;
       color: #cbd5e1;
       max-width: 600px;
-      margin: 0 auto;
       line-height: 1.6;
     }
 
@@ -475,50 +333,62 @@ export class ContactComponent {
   submitSuccess = signal(false);
 
   formData = signal({
-    firstName: '',
-    lastName: '',
+    name: '',
     storeName: '',
     email: '',
-    phone: '',
-    storeType: '',
-    interests: {
-      deepSea: false,
-      coastal: false,
-      night: false,
-      beginner: false
-    },
-    message: ''
+    message: '',
+    hp: '',
+    ts: Date.now()
   });
 
-  submitForm() {
+  constructor(public translate: TranslateService) {}
+
+  async submitForm() {
+    // Basic anti-spam checks
+    if (this.formData().hp) {
+      // honeypot filled -> likely spam, silently ignore
+      return;
+    }
+
+    const age = Date.now() - (this.formData().ts || 0);
+    if (age < 1500) {
+      this.submitMessage.set(this.translate.t('contact.error'));
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.submitMessage.set('');
 
-    // Simulate form submission
-    setTimeout(() => {
-      this.isSubmitting.set(false);
+    const payload = {
+      service_id: environment.emailjs.serviceId,
+      template_id: environment.emailjs.templateId,
+      user_id: environment.emailjs.userId,
+      template_params: {
+        name: this.formData().name,
+        storeName: this.formData().storeName,
+        email: this.formData().email,
+        message: this.formData().message
+      }
+    };
+
+    try {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('send-failed');
       this.submitSuccess.set(true);
-      this.submitMessage.set('Thank you for your inquiry! We\'ll get back to you within 24 hours with wholesale pricing and product information.');
-      
-      // Reset form after successful submission
-      setTimeout(() => {
-        this.formData.set({
-          firstName: '',
-          lastName: '',
-          storeName: '',
-          email: '',
-          phone: '',
-          storeType: '',
-          interests: {
-            deepSea: false,
-            coastal: false,
-            night: false,
-            beginner: false
-          },
-          message: ''
-        });
-        this.submitMessage.set('');
-      }, 5000);
-    }, 2000);
+      this.submitMessage.set(this.translate.t('contact.thanks'));
+      this.formData.set({ name: '', storeName: '', email: '', message: '', hp: '', ts: Date.now() });
+    } catch (e) {
+      console.error(e);
+      this.submitSuccess.set(false);
+      this.submitMessage.set(this.translate.t('contact.error'));
+    } finally {
+      this.isSubmitting.set(false);
+      setTimeout(() => this.submitMessage.set(''), 5000);
+    }
   }
 }

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "PROCHOCO CIRCUS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "https://www.prochoco.com/assets/images/products/circus2.5.png",
+    "description_pt": "Quando usar um palhaço \"rainbow\"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "description_en": "When to use a \"rainbow\" clown? (rainbow leaf)\n\nDuring the day, especially when the sun is higher up.\n\nIt's a versatile pattern working well in clearer to slightly turbid water."
+  },
+  {
+    "id": 2,
+    "name": "PROCHOCO PINTAS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "https://www.prochoco.com/assets/images/products/pintas2.5.png",
+    "description_pt": "Quando usar um palhaço \"rainbow\"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "description_en": "When to use a \"rainbow\" clown? (rainbow leaf)\n\nDuring the day, especially when the sun is higher up.\n\nIt's a versatile pattern working well in clearer to slightly turbid water."
+  },
+  {
+    "id": 3,
+    "name": "PROCHOCO CIRCUS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "3.0",
+    "sizeLength": "12 cm",
+    "weight": "16g",
+    "sinking": "3.5 s/m",
+    "image": "https://www.prochoco.com/assets/images/products/circus3.0.png",
+    "description_pt": "Quando usar um palhaço \"rainbow\"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "description_en": "When to use a \"rainbow\" clown? (rainbow leaf)\n\nDuring the day, especially when the sun is higher up.\n\nIt's a versatile pattern working well in clearer to slightly turbid water."
+  },
+  {
+    "id": 4,
+    "name": "PROCHOCO PINTAS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "3.0",
+    "sizeLength": "12 cm",
+    "weight": "16g",
+    "sinking": "3.5 s/m",
+    "image": "https://www.prochoco.com/assets/images/products/pintas3.0.png",
+    "description_pt": "Quando usar um palhaço \"rainbow\"? (folha arco-íris)\n\nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "description_en": "When to use a \"rainbow\" clown? (rainbow leaf)\n\nDuring the day, especially when the sun is higher up.\n\nIt's a versatile pattern working well in clearer to slightly turbid water."
+  }
+]

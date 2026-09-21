@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateService } from '../app/services/translate.service';
 
 @Component({
   selector: 'app-header',
@@ -8,18 +9,22 @@ import { CommonModule } from '@angular/common';
   template: `
     <header class="header">
       <nav class="nav-container">
-        <div class="logo">
-          <img src="https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&cs=tinysrgb&w=100&h=60&fit=crop" alt="PROCHOCO Logo" class="logo-img">
-          <span class="brand-name">PROCHOCO</span>
+        <div class="logo" (click)="scrollTo('home')">
+          <img src="assets/images/logo.png" alt="home" class="mascot" />
         </div>
-        
+
         <div class="nav-menu" [class.active]="isMenuOpen()">
-          <a href="#home" class="nav-link" (click)="scrollTo('home')">Home</a>
-          <a href="#products" class="nav-link" (click)="scrollTo('products')">Products</a>
-          <a href="#about" class="nav-link" (click)="scrollTo('about')">About</a>
-          <a href="#contact" class="nav-link" (click)="scrollTo('contact')">Contact</a>
+          <a href="#home" class="nav-link" (click)="scrollTo('home')">{{ translate.t('nav.home') }}</a>
+          <a href="#products" class="nav-link" (click)="scrollTo('products')">{{ translate.t('nav.products') }}</a>
+          <a href="#about" class="nav-link" (click)="scrollTo('about')">{{ translate.t('nav.about') }}</a>
+          <a href="#contact" class="nav-link" (click)="scrollTo('contact')">{{ translate.t('nav.contact') }}</a>
         </div>
-        
+
+        <div class="lang-switch" role="group" aria-label="Language switch">
+          <button class="lang-btn" [class.active]="translate.getLang() === 'pt-PT'" (click)="setLang('pt-PT')">PT</button>
+          <button class="lang-btn" [class.active]="translate.getLang() === 'en'" (click)="setLang('en')">EN</button>
+        </div>
+
         <button class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen()">
           <span></span>
           <span></span>
@@ -52,21 +57,61 @@ import { CommonModule } from '@angular/common';
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0;
+      cursor: pointer;
+      height: 80px;
     }
 
     .logo-img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      object-fit: cover;
+      height: 100%;
+      width: auto;
+      max-width: 300px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
+      transition: transform 0.3s ease;
+    }
+
+    .mascot {
+      height: 64px;
+      margin-left: 12px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(0,0,0,0.4));
+      border-radius: 6px;
+    }
+
+    .logo:hover .logo-img {
+      transform: scale(1.05);
     }
 
     .brand-name {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #3b82f6;
-      text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .brand-underline {
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+      border-radius: 2px;
+      animation: underlineWave 3s ease-in-out infinite;
+    }
+
+    @keyframes underlineWave {
+      0%, 100% {
+        width: 100px;
+      }
+      50% {
+        width: 120px;
+      }
     }
 
     .nav-menu {
@@ -88,6 +133,30 @@ import { CommonModule } from '@angular/common';
     .nav-link:hover {
       color: #3b82f6;
       background: rgba(59, 130, 246, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-left: 1rem;
+    }
+
+    .lang-btn {
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(226,232,240,0.08);
+      background: transparent;
+      color: #e2e8f0;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .lang-btn.active {
+      background: #e2e8f0;
+      color: #0f172a;
       transform: translateY(-1px);
     }
 
@@ -146,6 +215,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   isMenuOpen = signal(false);
+  constructor(public translate: TranslateService) {}
 
   toggleMenu() {
     this.isMenuOpen.update(value => !value);
@@ -157,5 +227,9 @@ export class HeaderComponent {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  setLang(lang: 'en' | 'pt-PT') {
+    this.translate.setLang(lang);
   }
 }

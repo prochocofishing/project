@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateService } from '../app/services/translate.service';
 
 @Component({
   selector: 'app-hero',
@@ -10,51 +11,45 @@ import { CommonModule } from '@angular/common';
       <div class="hero-content">
         <div class="hero-text">
           <h1 class="hero-title">
-            Premium Squid Jigs for
-            <span class="highlight">Professional Fishermen</span>
+            {{ translate.t('hero.title_line1') }}
+            <span class="highlight">{{ translate.t('hero.title_highlight') }}</span>
           </h1>
-          <p class="hero-subtitle">
-            PROCHOCO delivers high-quality squid jigs designed for maximum catch rates. 
-            Perfect for fishing stores looking to offer their customers the best in squid fishing equipment.
-          </p>
+          <p class="hero-subtitle">{{ translate.t('hero.subtitle') }}</p>
           <div class="hero-buttons">
             <button class="btn btn-primary" (click)="scrollToProducts()">
-              View Catalog
+              {{ translate.t('hero.button.view') }}
             </button>
-            <button class="btn btn-outline" (click)="scrollToContact()">
-              Wholesale Inquiry
-            </button>
+            <!-- <button class="btn btn-outline" (click)="scrollToContact()">
+              {{ translate.t('hero.button.wholesale') }}
+            </button> -->
           </div>
         </div>
-        <div class="hero-image">
-          <img src="https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Premium Squid Jigs" class="main-image">
-          <div class="floating-card">
-            <div class="stat">
-              <div class="stat-number">5+</div>
-              <div class="stat-label">Years Experience</div>
-            </div>
-            <div class="stat">
-              <div class="stat-number">50+</div>
-              <div class="stat-label">Jig Models</div>
-            </div>
-          </div>
-        </div>
+    <div class="hero-image">
+          <iframe 
+            class="youtube-video"
+            src="https://www.youtube.com/embed/TCt42EKedug?si=4EhuHxD8158wtRmV" 
+            title="PROCHOCO Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+          </iframe>
+        </div> 
       </div>
       <div class="hero-features">
         <div class="feature">
           <div class="feature-icon">🎣</div>
-          <h3>Professional Quality</h3>
-          <p>Crafted for serious anglers</p>
+          <h3>{{ translate.t('feature.professional.title') }}</h3>
+          <p>{{ translate.t('feature.professional.desc') }}</p>
         </div>
         <div class="feature">
           <div class="feature-icon">⚡</div>
-          <h3>Proven Results</h3>
-          <p>High catch rate guarantee</p>
+          <h3>{{ translate.t('feature.proven.title') }}</h3>
+          <p>{{ translate.t('feature.proven.desc') }}</p>
         </div>
         <div class="feature">
           <div class="feature-icon">🏆</div>
-          <h3>Wholesale Pricing</h3>
-          <p>Competitive rates for retailers</p>
+          <h3>{{ translate.t('feature.wholesale.title') }}</h3>
+          <p>{{ translate.t('feature.wholesale.desc') }}</p>
         </div>
       </div>
     </section>
@@ -157,6 +152,14 @@ import { CommonModule } from '@angular/common';
 
     .hero-image {
       position: relative;
+    }
+
+    .youtube-video {
+      width: 100%;
+      height: 400px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: none;
     }
 
     .main-image {
@@ -268,6 +271,7 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class HeroComponent {
+  constructor(public translate: TranslateService) {}
   scrollToProducts() {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
   }
