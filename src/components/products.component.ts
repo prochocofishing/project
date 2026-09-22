@@ -590,7 +590,7 @@ export class ProductsComponent {
       sinking: "5.0 s/m",
       image: "assets/images/products/matador2.5.png",
       description:
-        'Quando usar "o matador"?  \nO roxo tape reflete a luz e é das últimas cores a desaparecer com a profundidade, mantendo o isco visível em pouca luz e água mais escura.\n\nO dorso verde claro com riscas roxas garante contraste, excelente à noite e durante o crepúsculo.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
+        'Quando usar "o matador"?  \nO corpo roxo reflete a luz e é das últimas cores a desaparecer com a profundidade, mantendo o isco visível em pouca luz e água mais escura.\n\nO dorso verde claro com riscas azuis garante contraste, excelente à noite e durante o crepúsculo.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
       featureKeys: [
         "product.feature.bkk",
         "product.feature.glow",
@@ -608,7 +608,7 @@ export class ProductsComponent {
       sinking: "5.0 s/m",
       image: "assets/images/products/lulachamas2.5.png",
       description:
-        'Quando usar a "lula em chamas"?  \nO corpo rainbow é muito versátil, funcionando durante todo o dia em vários tipos de água.\n\nO fade em tons de roxo e rosa que imita chamas é especialmente eficaz ao amanhecer e ao entardecer, quando a luz muda rapidamente.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
+        'Quando usar a "lula em chamas"?  \nO corpo rainbow é muito versátil, funcionando durante todo o dia em vários tipos de água.\n\nO degradê em tons de roxo e rosa é especialmente eficaz ao amanhecer e ao entardecer, quando a luz muda rapidamente.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
       featureKeys: [
         "product.feature.bkk",
         "product.feature.rainbow",
@@ -625,7 +625,7 @@ export class ProductsComponent {
       sinking: "5.0 s/m",
       image: "assets/images/products/cobra2.5.png",
       description:
-        'Quando usar a "cobra"?  \nO dourado sólido destaca-se por silhueta no sol alto e na luz intensa, funcionando muito bem em dias de sol e água clara.\n\nA folha dourada reflete a luz como um cardume de pequenos peixes, aumentando a atração à distância.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
+        'Quando usar a "cobra"?  \nO dourado sólido destaca-se por silhueta no sol alto e na luz intensa, funcionando muito bem em dias de sol e água clara.\n\nO corpo dourado reflete a luz como um cardume de pequenos peixes, aumentando a atração à distância.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
       featureKeys: [
         "product.feature.bkk",
         "product.feature.glow",
