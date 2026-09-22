@@ -10,7 +10,10 @@ import { TranslateService } from '../app/services/translate.service';
     <header class="header">
       <nav class="nav-container">
         <div class="logo" (click)="scrollTo('home')">
-          <img src="assets/images/logo.png" alt="home" class="mascot" />
+          <img src="assets/images/logo.png" alt="PROCHOCO" class="mascot" />
+          <div class="brand-text">
+            <span class="brand-tagline">{{ translate.t('header.tagline') }}</span>
+          </div>
         </div>
 
         <div class="nav-menu" [class.active]="isMenuOpen()">
@@ -79,16 +82,32 @@ import { TranslateService } from '../app/services/translate.service';
       border-radius: 6px;
     }
 
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.1;
+      margin-left: 0.5rem;
+    }
+
+    .brand-tagline {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
     .logo:hover .logo-img {
       transform: scale(1.05);
     }
 
     .brand-name {
-      font-size: 1.75rem;
+      font-size: 1.35rem;
       font-weight: 900;
       color: #ffffff;
-      letter-spacing: 0.05em;
-      font-family: 'Arial Black', sans-serif;
+      letter-spacing: 0.04em;
+      font-family: 'Arial Black', 'Inter', sans-serif;
       text-transform: uppercase;
       background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
       -webkit-background-clip: text;
@@ -189,6 +208,10 @@ import { TranslateService } from '../app/services/translate.service';
         transform: translateY(-100vh);
         transition: transform 0.3s ease;
         border-top: 1px solid rgba(59, 130, 246, 0.2);
+      }
+
+      .brand-tagline {
+        display: none;
       }
 
       .nav-menu.active {

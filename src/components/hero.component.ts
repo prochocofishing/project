@@ -15,6 +15,7 @@ import { TranslateService } from '../app/services/translate.service';
             <span class="highlight">{{ translate.t('hero.title_highlight') }}</span>
           </h1>
           <p class="hero-subtitle">{{ translate.t('hero.subtitle') }}</p>
+    
           <div class="hero-buttons">
             <button class="btn btn-primary" (click)="scrollToProducts()">
               {{ translate.t('hero.button.view') }}
@@ -25,29 +26,38 @@ import { TranslateService } from '../app/services/translate.service';
           </div>
         </div>
     <div class="hero-image">
-          <iframe 
-            class="youtube-video"
-            src="https://www.youtube.com/embed/TCt42EKedug?si=4EhuHxD8158wtRmV" 
-            title="PROCHOCO Video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen>
-          </iframe>
+          <div class="hero-video-wrap">
+            <iframe 
+              class="youtube-video"
+              src="https://www.youtube.com/embed/TCt42EKedug?si=4EhuHxD8158wtRmV" 
+              title="PROCHOCO Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen>
+            </iframe>
+          
+          </div>
         </div> 
       </div>
       <div class="hero-features">
         <div class="feature">
-          <div class="feature-icon">🎣</div>
+          <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l7 3v6c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
           <h3>{{ translate.t('feature.professional.title') }}</h3>
           <p>{{ translate.t('feature.professional.desc') }}</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">⚡</div>
+          <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v7a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1.5 1.5 0 0 0 0 3h3"/><path d="M17 6h3a1.5 1.5 0 0 1 0 3h-3"/></svg>
+            </div>
           <h3>{{ translate.t('feature.proven.title') }}</h3>
           <p>{{ translate.t('feature.proven.desc') }}</p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🏆</div>
+          <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
           <h3>{{ translate.t('feature.wholesale.title') }}</h3>
           <p>{{ translate.t('feature.wholesale.desc') }}</p>
         </div>
@@ -111,6 +121,34 @@ import { TranslateService } from '../app/services/translate.service';
       margin-bottom: 2rem;
     }
 
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 40px;
+      color: #bfdbfe;
+      font-size: 0.85rem;
+      font-weight: 600;
+      backdrop-filter: blur(6px);
+    }
+
+    .badge-icon {
+      width: 16px;
+      height: 16px;
+      color: #3b82f6;
+      flex-shrink: 0;
+    }
+
     .hero-buttons {
       display: flex;
       gap: 1rem;
@@ -154,13 +192,21 @@ import { TranslateService } from '../app/services/translate.service';
       position: relative;
     }
 
+    .hero-video-wrap {
+      position: relative;
+    }
+
     .youtube-video {
       width: 100%;
       height: 400px;
       border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       border: none;
+      display: block;
     }
+
+  
+
 
     .main-image {
       width: 100%;
@@ -224,6 +270,15 @@ import { TranslateService } from '../app/services/translate.service';
     .feature-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+      color: #3b82f6;
+    }
+
+    .feature-icon svg {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.35));
     }
 
     .feature h3 {
@@ -253,6 +308,10 @@ import { TranslateService } from '../app/services/translate.service';
       }
 
       .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-badges {
         justify-content: center;
       }
 

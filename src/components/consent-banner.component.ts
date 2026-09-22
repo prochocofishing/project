@@ -9,56 +9,54 @@ import { TranslateService } from '../app/services/translate.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div *ngIf="visible" class="consent-overlay" role="dialog" aria-modal="true" aria-labelledby="consent-title">
-      <div class="consent-panel" role="document">
-        <div class="consent-header">
-          <h3 id="consent-title">{{ translate.t('consent.title') }}</h3>
-        </div>
-        <div class="consent-body">
-          <p class="consent-desc">{{ translate.t('consent.description') }}</p>
-        </div>
-        <div class="consent-footer">
-          <button class="btn btn-secondary" (click)="decline()">{{ translate.t('consent.decline') }}</button>
-          <button class="btn btn-primary" (click)="accept()">{{ translate.t('consent.accept') }}</button>
-        </div>
+    <div *ngIf="visible" class="consent-banner" role="region" aria-label="{{ translate.t('consent.title') }}">
+      <div class="consent-text">
+        <p class="consent-desc">
+          {{ translate.t('consent.description') }}
+          <a href="/cookies" (click)="openPolicy($event)">{{ translate.t('consent.policy_link_text') }}</a>
+        </p>
+      </div>
+      <div class="consent-actions">
+        <button class="btn btn-secondary" (click)="decline()">{{ translate.t('consent.decline') }}</button>
+        <button class="btn btn-primary" (click)="accept()">{{ translate.t('consent.accept') }}</button>
       </div>
     </div>
   `,
   styles: [
     `
-    .consent-overlay {
+    .consent-banner {
       position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(2,6,23,0.6);
+      bottom: 0;
+      left: 0;
+      right: 0;
       z-index: 10000;
-      padding: 1rem;
-    }
-    .consent-panel {
-      width: 100%;
-      max-width: 720px;
       background: linear-gradient(180deg, #0b1220, #0f172a);
       color: #e6eef8;
-      border-radius: 12px;
-      box-shadow: 0 12px 40px rgba(2,6,23,0.7);
-      padding: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 -8px 30px rgba(2, 6, 23, 0.5);
+      padding: 1rem 1.5rem;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
     }
-    .consent-header h3 { margin: 0; color: #f1f5f9; font-size: 1.25rem; }
-    .consent-desc { color: #cbd5e1; margin: 0; line-height: 1.5; }
-    .consent-note { margin: 0; color: #9fb4d6; font-size: 0.95rem; }
-    .consent-note a { color: #60a5fa; text-decoration: underline; }
-    .consent-footer { display:flex; justify-content: flex-end; gap: 0.75rem; }
-    .btn { padding: 0.6rem 0.9rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+    .consent-text { flex: 1 1 auto; }
+    .consent-desc { color: #cbd5e1; margin: 0; line-height: 1.5; max-width: 900px; font-size: 0.95rem; }
+    .consent-desc a { color: #60a5fa; text-decoration: underline; white-space: nowrap; }
+    .consent-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .btn { padding: 0.6rem 1.1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem; }
     .btn-primary { background: linear-gradient(45deg,#3b82f6,#06b6d4); color: white; }
-    .btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.06); }
-    @media (max-width: 640px) {
-      .consent-panel { padding: 1rem; }
-      .consent-footer { justify-content: stretch; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+    .btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+    @media (max-width: 768px) {
+      .consent-banner { flex-direction: column; align-items: stretch; padding: 1rem; }
+      .consent-actions { flex-direction: column; }
       .btn { width: 100%; }
     }
     `,

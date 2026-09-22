@@ -13,9 +13,28 @@ import { TranslateService } from '../app/services/translate.service';
           <div class="about-content">
             <h2 class="section-title">{{ translate.t('about.title') }}</h2>
             <p class="intro-text">{{ translate.t('about.paragraph') }}</p>
+            <div class="values-grid">
+              
+              <div class="value-item">
+                <div class="value-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l7 3v6c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <h4>{{ translate.t('about.value2.title') }}</h4>
+                <p>{{ translate.t('about.value2.desc') }}</p>
+              </div>
+              <div class="value-item">
+                <div class="value-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <h4>{{ translate.t('about.value3.title') }}</h4>
+                <p>{{ translate.t('about.value3.desc') }}</p>
+              </div>
+            </div>
           </div>
           <div class="mascot-container">
             <img src="assets/images/logomascot.png" alt="PROCHOCO Mascot" class="mascot-image-full" />
+   
+           
           </div>
         </div>
       </div>
@@ -41,8 +60,9 @@ import { TranslateService } from '../app/services/translate.service';
 
     .mascot-container {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 1.5rem;
       height: 100%;
     }
 
@@ -108,6 +128,15 @@ import { TranslateService } from '../app/services/translate.service';
     .value-icon {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+      color: #3b82f6;
+    }
+
+    .value-icon svg {
+      width: 42px;
+      height: 42px;
+      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.35));
     }
 
     .value-item h4 {
@@ -133,6 +162,8 @@ import { TranslateService } from '../app/services/translate.service';
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 2rem;
       backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 400px;
     }
 
     .stats-card h3 {

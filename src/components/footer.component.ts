@@ -102,6 +102,9 @@ import { RouterLink } from "@angular/router";
             </div>
           </div>
 
+ 
+          
+
           <div class="footer-section">
             <h4>{{ translate.t("footer.contact.title") }}</h4>
             <div class="contact-info">
@@ -275,6 +278,8 @@ import { RouterLink } from "@angular/router";
 
       .footer-links li {
         margin-bottom: 0.75rem;
+        color: #94a3b8;
+        font-size: 0.9rem;
       }
 
       .footer-links a {
@@ -400,5 +405,10 @@ export class FooterComponent {
       return tpl.replace("{year}", year);
     }
     return tpl;
+  }
+
+  list(key: string): string[] {
+    const value = this.translate.t(key);
+    return Array.isArray(value) ? value : [];
   }
 }

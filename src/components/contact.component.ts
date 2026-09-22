@@ -9,7 +9,7 @@ import { TranslateService } from '../app/services/translate.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <!-- <section id="contact" class="contact-section">
+    <section id="contact" class="contact-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">{{ translate.t('contact.title') }}</h2>
@@ -17,6 +17,38 @@ import { TranslateService } from '../app/services/translate.service';
         </div>
 
         <div class="contact-grid">
+          <div class="contact-aside">
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <div class="contact-details">
+                <h4>{{ translate.t('footer.contact.title') }}</h4>
+                <p><a href="mailto:prochocofishing@gmail.com">prochocofishing@gmail.com</a></p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <div class="contact-details">
+                <h4>Local</h4>
+                <p>Portugal, Setúbal</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              </span>
+              <div class="contact-details">
+                <h4>Venda por grosso para lojas de pesca</h4>
+                <p>{{ translate.t('products.cta.text') }}</p>
+              </div>
+            </div>
+          </div>
+
           <div class="contact-form-container">
             <form class="contact-form" (ngSubmit)="submitForm()" #contactForm="ngForm">
               <h3>{{ translate.t('contact.title') }}</h3>
@@ -41,7 +73,6 @@ import { TranslateService } from '../app/services/translate.service';
                 <textarea id="message" name="message" [(ngModel)]="formData().message" rows="5" class="form-input"></textarea>
               </div>
 
-     
               <input type="text" name="hp" [(ngModel)]="formData().hp" style="display:none" autocomplete="off">
 
               <input type="hidden" name="ts" [value]="formData().ts">
@@ -57,7 +88,7 @@ import { TranslateService } from '../app/services/translate.service';
           </div>
         </div>
       </div>
-    </section> -->
+    </section>
   `,
   styles: [`
     .contact-section {
@@ -111,9 +142,30 @@ import { TranslateService } from '../app/services/translate.service';
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+    .contact-aside {
+      display: flex;
+      flex-direction: column;
+    }
+
     .contact-icon {
       font-size: 1.5rem;
       margin-top: 0.25rem;
+      color: #3b82f6;
+      display: flex;
+    }
+
+    .contact-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .contact-details a {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
+    .contact-details a:hover {
+      color: #93c5fd;
     }
 
     .contact-details h4 {
@@ -359,10 +411,17 @@ export class ContactComponent {
     this.isSubmitting.set(true);
     this.submitMessage.set('');
 
+    const { serviceId, templateId, userId } = environment.emailjs;
+    if (!serviceId || !templateId || !userId) {
+      this.isSubmitting.set(false);
+      this.sendViaMailto();
+      return;
+    }
+
     const payload = {
-      service_id: environment.emailjs.serviceId,
-      template_id: environment.emailjs.templateId,
-      user_id: environment.emailjs.userId,
+      service_id: serviceId,
+      template_id: templateId,
+      user_id: userId,
       template_params: {
         name: this.formData().name,
         storeName: this.formData().storeName,
@@ -390,5 +449,18 @@ export class ContactComponent {
       this.isSubmitting.set(false);
       setTimeout(() => this.submitMessage.set(''), 5000);
     }
+  }
+
+  private sendViaMailto() {
+    const { name, storeName, email, message } = this.formData();
+    const subject = encodeURIComponent(`Contacto PROCHOCO - ${storeName || name}`);
+    const body = encodeURIComponent(
+      `Nome: ${name}\nLoja: ${storeName}\nEmail: ${email}\n\nMensagem:\n${message}`
+    );
+    window.location.href = `mailto:prochocofishing@gmail.com?subject=${subject}&body=${body}`;
+    this.submitSuccess.set(true);
+    this.submitMessage.set(this.translate.t('contact.thanks'));
+    this.formData.set({ name: '', storeName: '', email: '', message: '', hp: '', ts: Date.now() });
+    setTimeout(() => this.submitMessage.set(''), 6000);
   }
 }
