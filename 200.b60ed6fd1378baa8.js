@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdemo=self.webpackChunkdemo||[]).push([[200],{2200(Ke,de,U){U.d(de,{MD:()=>Ze});var pe=U(2615),_e=U(3664);let Ze=(()=>{class t{static \u0275fac=function(u){return new(u||t)};static \u0275mod=_e.$C({type:t});static \u0275inj=pe.G2t({})}return t})()}}]);

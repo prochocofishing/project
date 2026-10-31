@@ -1,0 +1,207 @@
+[
+  {
+    "id": 5,
+    "name": "PROCHOCO PREDADOR 01 - CAVALA JAPONESA",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/cavala-japonesa.webp",
+    "finish": "GOLDEN TAPE",
+    "description": "Quando usar o \"cavala japonesa\"?  \nDurante o dia, sobretudo com sol alto e água clara: o corpo dourado reflete a luz, imitando um cardume de sardinha ou cavala junto à superfície.\n\nÉ um padrão muito eficaz em águas límpidas, onde o dourado sólido se destaca por contraste com o brilho intenso do sol.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.goldBody",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "CAVALA JAPONESA",
+    "descriptionEn": "When to use “cavala japonesa”?\nDuring the day, especially with a high sun and clear water: the golden body reflects light, imitating a school of sardines or mackerel near the surface.\n\nIt is a very effective pattern in clear water, where the solid gold stands out in contrast to the intense sunlight.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 6,
+    "name": "PROCHOCO PREDADOR 02 - ZEBRA",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/zebra.webp",
+    "finish": "GLOW",
+    "description": "Quando usar a \"zebra\"?  \nO corpo glow acumula luz e brilha no escuro, mantendo o isco visível quando a luz é pouca.\n\nAs riscas a preto e branco criam um contraste máximo, ideal para água turva, dias nublados, ao amanhecer, ao entardecer e durante a noite.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.glowBody",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "ZEBRA",
+    "descriptionEn": "When to use “zebra”?\nThe glow body stores light and shines in the dark, keeping the lure visible in low light.\n\nThe black and white stripes create strong contrast, ideal for murky water, cloudy days, dawn, dusk and night.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 7,
+    "name": "PROCHOCO PREDADOR 03 - UVA BRAVA",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/uva-brava.webp",
+    "finish": "RED TAPE",
+    "description": "Quando usar a \"uva brava\"?  \nO vermelho é dos tons mais eficazes ao amanhecer e ao entardecer, quando a água ganha um tom avermelhado.\n\nO roxo (uva) é das últimas cores a desaparecer com a profundidade, funcionando bem quando a luz é fraca ou a água está mais carregada.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.redBody",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "UVA BRAVA",
+    "descriptionEn": "When to use “uva brava”?\nRed is one of the most effective colours at dawn and dusk, when the water takes on a reddish tone.\n\nPurple (grape) is one of the last colours to disappear with depth, working well in low light or more coloured water.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 8,
+    "name": "PROCHOCO PREDADOR 04 - O MATADOR",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/matador.webp",
+    "finish": "PURPLE TAPE",
+    "description": "Quando usar \"o matador\"?  \nO corpo roxo reflete a luz e é das últimas cores a desaparecer com a profundidade, mantendo o isco visível em pouca luz e água mais escura.\n\nO dorso verde claro com riscas azuis garante contraste, excelente à noite e durante o crepúsculo.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.purpleBody",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "O MATADOR",
+    "descriptionEn": "When to use “o matador”?\nThe purple body reflects light and is one of the last colours to disappear with depth, keeping the lure visible in low light and darker water.\n\nThe light green back with blue stripes provides contrast, excellent at night and during twilight.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 9,
+    "name": "PROCHOCO PREDADOR 05 - LULA EM CHAMAS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/lula-em-chamas.webp",
+    "finish": "RAINBOW TAPE",
+    "description": "Quando usar a \"lula em chamas\"?  \nO corpo rainbow é muito versátil, funcionando durante todo o dia em vários tipos de água.\n\nO degradê em tons de roxo e rosa é especialmente eficaz ao amanhecer e ao entardecer, quando a luz muda rapidamente.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.rainbow",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "LULA EM CHAMAS",
+    "descriptionEn": "When to use “lula em chamas”?\nThe rainbow body is very versatile, working throughout the day in different types of water.\n\nThe purple and pink gradient is especially effective at dawn and dusk, when the light changes quickly.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 10,
+    "name": "PROCHOCO PREDADOR 06 - COBRA",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/predador/cobra.webp",
+    "finish": "GOLDEN TAPE",
+    "description": "Quando usar a \"cobra\"?  \nO dourado sólido destaca-se por silhueta no sol alto e na luz intensa, funcionando muito bem em dias de sol e água clara.\n\nO corpo dourado reflete a luz como um cardume de pequenos peixes, aumentando a atração à distância.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.goldBody",
+      "product.feature.laser"
+    ],
+    "series": "predador",
+    "shortName": "COBRA",
+    "descriptionEn": "When to use “cobra”?\nSolid gold stands out in silhouette under a high sun and bright light, working very well on sunny days in clear water.\n\nThe golden body reflects light like a school of small fish, increasing attraction from a distance.\n\nThe dot next to the hooks, resembling an eye, acts as a visual attraction point. By drawing on the cuttlefish’s natural tendency to attack prey around the head, it helps direct the strike towards the hooks."
+  },
+  {
+    "id": 1,
+    "name": "PROCHOCO CIRCUS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/circus2.5.webp",
+    "description": "Quando usar um palhaço \"rainbow\"? \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.rainbow",
+      "product.feature.laser"
+    ],
+    "series": "circus",
+    "shortName": "CIRCUS",
+    "descriptionEn": "When to use a “rainbow” squid jig?\nDuring the day, especially when the sun is higher.\n\nIt is a very versatile pattern, working well in different types of water, from clearer to slightly murky."
+  },
+  {
+    "id": 2,
+    "name": "PROCHOCO PINTAS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "2.5",
+    "sizeLength": "10 cm",
+    "weight": "10g",
+    "sinking": "5.0 s/m",
+    "image": "assets/images/products/pintas2.5.webp",
+    "description": "Quando usar um palhaço \"rainbow\"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.rainbow",
+      "product.feature.laser"
+    ],
+    "series": "pintas",
+    "shortName": "PINTAS",
+    "descriptionEn": "When to use a “rainbow” squid jig?\nDuring the day, especially when the sun is higher.\n\nIt is a very versatile pattern, working well in different types of water, from clearer to slightly murky."
+  },
+  {
+    "id": 3,
+    "name": "PROCHOCO CIRCUS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "3.0",
+    "sizeLength": "12 cm",
+    "weight": "16g",
+    "sinking": "3.5 s/m",
+    "image": "assets/images/products/circus3.0.webp",
+    "description": "Quando usar um palhaço \"rainbow\"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.rainbow",
+      "product.feature.laser"
+    ],
+    "series": "circus",
+    "shortName": "CIRCUS",
+    "descriptionEn": "When to use a “rainbow” squid jig?\nDuring the day, especially when the sun is higher.\n\nIt is a very versatile pattern, working well in different types of water, from clearer to slightly murky."
+  },
+  {
+    "id": 4,
+    "name": "PROCHOCO PINTAS",
+    "categoryKey": "product.category.squid",
+    "sizeNumber": "3.0",
+    "sizeLength": "12 cm",
+    "weight": "16g",
+    "sinking": "3.5 s/m",
+    "image": "assets/images/products/pintas3.0.webp",
+    "description": "Quando usar um palhaço \"rainbow\"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.",
+    "featureKeys": [
+      "product.feature.bkk",
+      "product.feature.glow",
+      "product.feature.rainbow",
+      "product.feature.laser"
+    ],
+    "series": "pintas",
+    "shortName": "PINTAS",
+    "descriptionEn": "When to use a “rainbow” squid jig?\nDuring the day, especially when the sun is higher.\n\nIt is a very versatile pattern, working well in different types of water, from clearer to slightly murky."
+  }
+]
