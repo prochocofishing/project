@@ -1,95 +1,67 @@
-SEO checklist and actions taken
+﻿# SEO técnico — PROCHOCO
 
-Files added/updated:
-- `src/index.html` — meta description, canonical, hreflang alternates, Organization JSON-LD, Open Graph & Twitter meta already added.
-- `src/assets/sitemap.xml` — static sitemap listing main pages.
-- `src/assets/robots.txt` — references sitemap and allows crawling.
-- `src/components/products.component.ts` — per-product JSON-LD inserted into product cards.
-- `src/components/consent-banner.component.ts` — consent flow (keeps analytics blocked until accept).
+Esta revisão mantém a aplicação Angular e acrescenta uma saída estática pré-renderizada. Não foi introduzido um servidor SSR. O HTML inicial contém o conteúdo das páginas; a aplicação Angular continua a arrancar no navegador para disponibilizar as interações.
 
-How to submit sitemap to Google Search Console
-1. Log in to Google Search Console and add/verify your property (`https://www.prochoco.com/`).
-2. In the left menu, choose "Sitemaps".
-3. Enter the path to your sitemap (e.g. `assets/sitemap.xml` or `/sitemap.xml` depending on where you host it).
-4. Click "Submit" and check back for index coverage.
+## URLs e indexação
 
-Notes & recommendations
-- For best crawling, host `sitemap.xml` at the root (https://www.prochoco.com/sitemap.xml). If your deployment serves `src/assets/sitemap.xml` at `/assets/sitemap.xml`, submit that URL instead.
-- Consider using server-side rendering (Angular Universal) if you need richer indexing for SPA content.
-- Use Google Search Console to monitor coverage and remove errors.
+| Conteúdo | Português de Portugal | Inglês |
+| --- | --- | --- |
+| Catálogo e apresentação | `/` | `/en/` |
+| Privacidade | `/privacy/` | `/en/privacy/` |
+| Termos | `/terms/` | `/en/terms/` |
+| Cookies | `/cookies/` | `/en/cookies/` |
 
-Detailed next steps and commands
+Cada página tem um título, uma descrição e um canonical próprios. Os alternates `pt-PT`, `en` e `x-default` apontam para as versões correspondentes da mesma página. O atributo `lang` acompanha o idioma do URL. Mudar de idioma preserva a página e, quando aplicável, a âncora e os parâmetros do URL.
 
-- Submit sitemap to Google Search Console:
-	1. Go to https://search.google.com/search-console
-	2. Select your property and open "Sitemaps"
-	3. Submit `https://www.prochoco.com/sitemap.xml` (or `/assets/sitemap.xml` if hosted there)
+O domínio canónico configurado é `https://www.prochoco.com`. As oito páginas canónicas constam de `/sitemap.xml`, gerado por `generate-sitemap.js`. As âncoras dos produtos não são documentos independentes e foram removidas do sitemap. Não é atribuído um `lastmod` artificial a cada build.
 
-- Validate structured data (Rich Results Test):
-	- Use https://search.google.com/test/rich-results
-	- Paste a public URL (e.g., `https://www.prochoco.com/`) or a HTML snapshot containing your JSON-LD and run the test.
+`robots.txt` permite a pesquisa das páginas públicas e referencia o sitemap na raiz. Os ficheiros de SEO e o feed são copiados para a saída de produção. `404.html` e a rota desconhecida apresentam uma página de erro com `noindex`, sem canonical que a faça passar pelo catálogo.
 
-- Run Lighthouse locally (Chrome) or from command line:
-	- In Chrome: DevTools -> Lighthouse -> Generate report (Mobile + Desktop)
-	- CLI (if you have Node + Lighthouse installed):
-		```powershell
-		npm install -g lighthouse
-		lighthouse https://localhost:4200 --output html --output-path ./lighthouse-report.html
-		```
+O servidor local devolve HTTP 404 para recursos e páginas inexistentes e redireciona diretórios para o URL com barra final. O comportamento real do alojamento, incluindo redirecionamentos de HTTP, variantes do domínio e URLs antigas, deve ser confirmado após publicação.
 
-- Prerender / SSR (overview & quick commands)
-	- Option A (Angular Universal):
-		```powershell
-		ng add @nguniversal/express-engine
-		npm run build:ssr
-		npm run serve:ssr
-		```
-		This creates server-side rendering with an Express server. Deployment requires a Node server (VPS, Heroku, or similar).
+## Metadados e dados estruturados
 
-	- Option B (static prerender for standalone routes):
-		```powershell
-		ng run project:prerender
-		```
-		(Exact command depends on Angular project config & builders; may require adding a prerender target.)
+`SeoService` atualiza os metadados quando o utilizador navega ou muda de idioma. Os documentos pré-renderizados incluem estes valores sem depender da execução de JavaScript pelo motor de pesquisa:
 
-- Expose product feed to LLMs and crawlers:
-	- I added `/assets/products.json` which includes full product descriptions in PT/EN. Make sure this file is publicly accessible after deployment.
-	- You can link to it from `robots.txt` as a comment, or include it in your sitemap (not standard but can be useful to humans/consumers).
+- Título, descrição e instruções de indexação.
+- Canonical e alternates linguísticos.
+- Open Graph e Twitter Cards, com URL e imagem de partilha.
+- JSON-LD com `Organization`, `WebSite` e `WebPage`.
+- `BreadcrumbList` nas páginas legais.
+- Dez objetos `Product` nas páginas do catálogo, com descrições no idioma correto e características reais da fonte de produtos.
 
-- Final checklist before submit
-	- Verify `/sitemap.xml` is reachable at site root.
-	- Validate one or two product pages (or the homepage with product JSON-LD) in the Rich Results Test.
-	- Run Lighthouse and fix major issues (LCP, CLS, accessibility).
-	- Submit the sitemap in Search Console and monitor Index Coverage.
- 
-Prerendering with Playwright (static snapshots)
-- This repo now includes a small prerender utility using Playwright to capture HTML snapshots of important routes.
+Não foram acrescentados preços, disponibilidade, avaliações, classificações, ofertas, moradas adicionais, artigos ou FAQs. Foi removida a ação de pesquisa que apontava para uma funcionalidade inexistente. A presença de JSON-LD não garante a apresentação de resultados enriquecidos.
 
-Steps to generate static snapshots:
-1. Install dependencies:
+O feed público `/assets/products.json` corresponde à fonte utilizada pela interface e pelos dados estruturados. Não constitui uma página adicional do sitemap nem substitui o conteúdo visível do catálogo.
+
+## Gerar e verificar localmente
+
+Em Windows PowerShell:
+
 ```powershell
-npm install
-npm run prerender:install-browsers
+npm.cmd run build:static
+npm.cmd run test:static
+npm.cmd run verify:site
+npm.cmd run preview
 ```
-2. Serve your app locally (dev server or built `dist`):
-```powershell
-npm run start
-# or, after build:
-npx http-server ./dist/prochoco -p 8080
-```
-3. Run the prerender script (change `BASE_URL` if serving on a different port):
-```powershell
-BASE_URL=http://localhost:4200 npm run prerender
-# or if using the static build server:
-BASE_URL=http://localhost:8080 npm run prerender
-```
-4. Generated HTML snapshots will be in `./prerendered/`.
 
-Notes:
-- The snapshots are useful for SEO testing and for uploading static HTML to a CDN or server for crawlers.
-- If you prefer Angular Universal (SSR) instead, follow the Angular Universal guide; prerender snapshots are a lighter alternative that doesn't require a Node server in production.
+Nos restantes terminais, substituir `npm.cmd` por `npm`. Os scripts de validação necessitam da saída atualizada em `dist/static`. O pré-renderizador gere o seu próprio servidor e não aceita o consentimento de Analytics em nome dos visitantes. Os pedidos a terceiros são bloqueados durante a geração.
 
-Next steps I can do for you
-- Add server-side rendered product pages or pre-render the product list for better indexing.
-- Generate a full sitemap including product entries (requires per-product URLs).
-- Add schema for product offers/pricing if you add price fields.
+As verificações estáticas abrangem as oito páginas, uma única H1, títulos e descrições distintos, idioma, canonical, hreflang, JSON-LD válido, correspondência dos produtos, ligações locais, recursos, sitemap, robots e 404. As verificações de integração abrangem também navegação, filtros, formulários inválidos, consentimento e ausência de overflow nas larguras configuradas. Consultar o relatório da revisão para distinguir o que foi executado dos comandos disponibilizados.
+
+Para uma auditoria Lighthouse, utilizar a saída de produção servida por HTTP local e registar a mesma versão do navegador, viewport e perfil de simulação antes e depois. Não apresentar como medições reais as estimativas de transferência do compilador nem os orçamentos de bundle.
+
+## Ações que dependem do exterior
+
+Após uma publicação autorizada:
+
+1. Confirmar HTTPS, redirecionamentos para `https://www.prochoco.com`, barras finais, respostas HTTP das páginas legais e verdadeiro status 404.
+2. Confirmar `/sitemap.xml`, `/robots.txt`, `/assets/products.json` e todos os recursos no domínio público.
+3. Verificar a propriedade no Google Search Console e submeter `https://www.prochoco.com/sitemap.xml`.
+4. Inspecionar páginas PT/EN no Search Console para confirmar acesso ao HTML renderizado, canonical escolhido e cobertura de indexação.
+5. Validar os dados estruturados publicados no [Rich Results Test](https://search.google.com/test/rich-results) e, quando necessário, no [Schema Markup Validator](https://validator.schema.org/).
+6. Rever cache, compressão e cabeçalhos de segurança no alojamento. O servidor local demonstra estas opções, mas não altera as políticas de GitHub Pages.
+7. Configurar e testar o envio EmailJS e verificar Analytics apenas com consentimento, caso esses serviços sejam utilizados.
+8. Acompanhar Core Web Vitals com dados de utilização real, quando disponíveis, e investigar problemas no Search Console.
+
+Nenhuma submissão ao Search Console, validação do domínio público ou configuração de servidor foi efetuada nesta implementação local. Resultados Lighthouse, conformidade integral WCAG e posições na pesquisa não são garantidos pelo código nem pela presença destas verificações.

@@ -4,6 +4,30 @@ const pt = {
   "nav.about": "Sobre",
   "nav.contact": "Contacto",
 
+  "header.tagline": "",
+  "hero.eyebrow": "Marca portuguesa",
+  "hero.title_line1": "Palhaços de pesca.",
+  "hero.title_highlight": "Paixão em cada detalhe.",
+  "hero.description": "Descubra os palhaços ProChoco para a pesca de chocos, lulas e polvos. Desenvolvidos em Portugal, com atenção a cada detalhe, disponíveis numa variedade de cores e padrões para diferentes condições de pesca.",
+  "hero.button.retailers": "Onde comprar",
+  "hero.video.open": "Ver vídeos de pesca",
+  "videos.eyebrow": "NO MAR",
+  "videos.title": "Vê a PROCHOCO em ação.",
+  "videos.intro": "Da série PREDADOR ao CIRCUS, acompanha os nossos palhaços na pesca ao choco.",
+  "videos.play": "Reproduzir vídeo",
+  "videos.close": "Fechar vídeo",
+  "videos.youtube": "Ver no YouTube",
+  "videos.newWindow": "(abre numa nova janela)",
+  "videos.predador.title": "Choco XXL com Lula em Chamas",
+  "videos.predador.description": "O palhaço Lula em Chamas 2.5, da série PREDADOR, na pesca ao choco.",
+  "videos.circus.title": "Pesca ao choco em Setúbal",
+  "videos.circus.description": "Acompanha o CIRCUS da PROCHOCO debaixo de água, na pesca ao choco em Setúbal.",
+  "hero.video.close": "Fechar vídeo",
+  "hero.video.title": "PROCHOCO — vídeo de apresentação dos palhaços de pesca",
+  "hero.collection": "Série PREDADOR",
+  "hero.image.alt": "Palhaço PROCHOCO PREDADOR 01 Cavala Japonesa, tamanho 2.5, 10 g",
+  "hero.features.label": "Características da PROCHOCO",
+
   "hero.subtitle": "A maioria das grandes histórias nasce de uma ideia simples… e a nossa não foi diferente. Tudo começou com uma paixão profunda pelo mar e pela arte da pesca. Acreditávamos, com uma convicção inabalável, que era possível transformar esse amor em algo maior: criar, equipamento de pesca de elevada qualidade, capaz de resistir ao uso duro, servir quem vive o mar e, acima de tudo, ser verdadeiramente eficaz. Munidos do nosso conhecimento, dos melhores materiais e de uma dedicação sem limites, lançámo-nos ao desafio. E foi assim que uma simples paixão se tornou numa missão e numa grande história que continua a crescer.",
 
   "hero.button.view": "Ver Catálogo",
@@ -11,8 +35,8 @@ const pt = {
 
   "feature.professional.title": "Qualidade Profissional",
   "feature.professional.desc": "Concebido para pescadores exigentes",
-  "feature.proven.title": "Resultados Comprovados",
-  "feature.proven.desc": "Garantia de maior taxa de captura",
+  "feature.proven.title": "Atenção ao Pormenor",
+  "feature.proven.desc": "Equilíbrio, movimento e padrões de cor",
   "feature.wholesale.title": "Preços por Grosso",
   "feature.wholesale.desc": "Tabelas competitivas para retalhistas",
 
@@ -84,11 +108,11 @@ const pt = {
   "contact.message": "Mensagem",
   "contact.send": "Enviar Pedido",
   "contact.sending": "A enviar...",
-  "contact.thanks": "Obrigado! Respondemos dentro de 24 horas.",
+  "contact.thanks": "Obrigado! Recebemos o seu pedido e entraremos em contacto.",
   "contact.error": "Erro ao enviar. Tente novamente mais tarde."
 
   ,"consent.title": "Privacidade",
-  "consent.description": "Utilizamos cookies próprios e de terceiros para lhe oferecer uma melhor experiência e serviço. Para saber quais cookies usamos e como os desativar, leia a Política de Cookies. Para continuar, por favor escolha 'Aceitar' ou 'Recusar'.",
+  "consent.description": "Com a sua autorização, usamos Google Analytics para compreender a utilização do site. Pode aceitar, recusar ou alterar a sua escolha no rodapé.",
   "consent.policy_link_text": "Ler Política de Cookies",
   "consent.accept": "Aceitar",
   "consent.decline": "Recusar"

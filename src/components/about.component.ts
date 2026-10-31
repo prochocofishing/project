@@ -1,289 +1,66 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+﻿import { Component } from '@angular/core';
 import { TranslateService } from '../app/services/translate.service';
 
 @Component({
-  selector: 'app-about',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'app-about', standalone: true,
   template: `
-    <section id="about" class="about-section">
-      <div class="container">
-        <div class="about-grid">
-          <div class="about-content">
-            <h2 class="section-title">{{ translate.t('about.title') }}</h2>
-            <p class="intro-text">{{ translate.t('about.paragraph') }}</p>
-            <div class="values-grid">
-              
-              <div class="value-item">
-                <div class="value-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l7 3v6c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-                </div>
-                <h4>{{ translate.t('about.value2.title') }}</h4>
-                <p>{{ translate.t('about.value2.desc') }}</p>
-              </div>
-              <div class="value-item">
-                <div class="value-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                </div>
-                <h4>{{ translate.t('about.value3.title') }}</h4>
-                <p>{{ translate.t('about.value3.desc') }}</p>
-              </div>
+    <section id="about" class="about-section" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div class="about-art">
+          <span class="art-label">PROCHOCO · {{ en ? 'CEPHALOPODS' : 'CEFALÓPODES' }}</span>
+          <img src="assets/images/logomascot.webp" [alt]="en ? 'PROCHOCO fishing mascot' : 'Mascote de pesca PROCHOCO'" width="381" height="555" loading="lazy" decoding="async">
+          <p>{{ en ? 'A Portuguese brand. A passion for the sea.' : 'Uma marca portuguesa. Uma paixão pelo mar.' }}</p>
+        </div>
+        <div class="about-content">
+          <p class="eyebrow">{{ en ? 'THE BRAND' : 'A MARCA' }}</p>
+          <h2 id="about-title">{{ translate.t('about.title') }}</h2>
+          <p class="intro-text">{{ translate.t('about.paragraph') }}</p>
+          <div class="values-grid">
+            <div class="value-item">
+              <span class="value-number" aria-hidden="true">01 /</span>
+              <h3>{{ translate.t('about.value2.title') }}</h3>
+              <p>{{ translate.t('about.value2.desc') }}</p>
+            </div>
+            <div class="value-item">
+              <span class="value-number" aria-hidden="true">02 /</span>
+              <h3>{{ translate.t('about.value3.title') }}</h3>
+              <p>{{ translate.t('about.value3.desc') }}</p>
             </div>
           </div>
-          <div class="mascot-container">
-            <img src="assets/images/logomascot.png" alt="PROCHOCO Mascot" class="mascot-image-full" />
-   
-           
-          </div>
+          <details class="brand-story">
+            <summary>{{ en ? 'Discover our story' : 'Conheça a nossa história' }} <span aria-hidden="true">+</span></summary>
+            <p>{{ translate.t('hero.subtitle') }}</p>
+          </details>
         </div>
       </div>
     </section>
   `,
   styles: [`
-    .about-section {
-      padding: 6rem 2rem;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    .mascot-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      height: 100%;
-    }
-
-    .mascot-image-full {
-      width: 100%;
-      height: auto;
-      max-width: 400px;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
-      border-radius: 16px;
-    }
-
-    .section-title {
-      font-size: 3rem;
-      font-weight: bold;
-      color: #f1f5f9;
-      margin-bottom: 2rem;
-      background: linear-gradient(45deg, #3b82f6, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .intro-text {
-      font-size: 1.25rem;
-      color: #cbd5e1;
-      line-height: 1.7;
-      margin-bottom: 2rem;
-    }
-
-    .story-content h3 {
-      color: #f1f5f9;
-      font-size: 1.5rem;
-      margin: 2rem 0 1rem 0;
-    }
-
-    .story-content p {
-      color: #cbd5e1;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .values-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    .value-item {
-      text-align: center;
-      padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .value-item:hover {
-      transform: translateY(-5px);
-    }
-
-    .value-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: center;
-      color: #3b82f6;
-    }
-
-    .value-icon svg {
-      width: 42px;
-      height: 42px;
-      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.35));
-    }
-
-    .value-item h4 {
-      color: #f1f5f9;
-      font-size: 1.125rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .value-item p {
-      color: #94a3b8;
-      font-size: 0.875rem;
-    }
-
-    .about-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .stats-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      backdrop-filter: blur(10px);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .stats-card h3 {
-      color: #f1f5f9;
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .stat-item {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 3rem;
-      font-weight: bold;
-      color: #3b82f6;
-      line-height: 1;
-    }
-
-    .stat-label {
-      color: #f1f5f9;
-      font-weight: 600;
-      font-size: 1.125rem;
-      margin: 0.5rem 0;
-    }
-
-    .stat-desc {
-      color: #94a3b8;
-      font-size: 0.875rem;
-    }
-
-    .certifications {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .certifications h4 {
-      color: #f1f5f9;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-
-    .cert-badges {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      background: rgba(59, 130, 246, 0.2);
-      color: #3b82f6;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    .team-image {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      height: 300px;
-    }
-
-    .team-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .team-image:hover img {
-      transform: scale(1.05);
-    }
-
-    .image-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-      color: white;
-      padding: 2rem 1.5rem 1.5rem;
-      text-align: center;
-    }
-
-    .image-overlay p {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .about-section {
-        padding: 4rem 1rem;
-      }
-
-      .about-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .section-title {
-        font-size: 2rem;
-      }
-
-      .values-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .team-image {
-        height: 250px;
-      }
-    }
+    :host { display: block; }
+    .about-section { padding: clamp(4rem, 8vw, 7rem) 0; background: #0d2433; color: #f4f7f6; }
+    .about-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+    .about-art { background: #071b28; border: 1px solid #294251; border-radius: 14px; padding: clamp(1.4rem, 3vw, 2.5rem); text-align: center; }
+    .art-label { display: block; color: #a7bbc5; font-size: .66rem; font-weight: 650; letter-spacing: .18em; text-align: left; }
+    .about-art img { display: block; width: 100%; height: auto; max-width: 240px; aspect-ratio: 381 / 555; object-fit: contain; margin: 1.5rem auto; }
+    .about-art p { margin: 0; padding-top: 1rem; border-top: 1px solid #294251; color: #b3c6ce; font-size: .8rem; line-height: 1.6; }
+    .eyebrow { color: #73e1cf; font-size: .72rem; letter-spacing: .16em; font-weight: 700; margin-bottom: 1rem; }
+    h2 { color: #f4f7f6; font-size: clamp(2rem, 3.8vw, 3.25rem); line-height: 1.1; letter-spacing: -.045em; margin-bottom: 1.5rem; }
+    .intro-text { font-size: 1.08rem; line-height: 1.85; color: #b3c6ce; margin: 0; }
+    .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.2rem; padding-top: 2rem; border-top: 1px solid #294251; }
+    .value-number { color: #73e1cf; font-size: .7rem; letter-spacing: .08em; }
+    h3 { color: #f4f7f6; font-size: 1rem; margin: .7rem 0; }
+    .value-item p { color: #b3c6ce; font-size: .86rem; line-height: 1.75; margin: 0; }
+    .brand-story { margin-top: 2rem; border-top: 1px solid #294251; border-bottom: 1px solid #294251; }
+    .brand-story summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 58px; padding: .85rem 0; color: #73e1cf; font-size: .9rem; font-weight: 600; cursor: pointer; list-style: none; }
+    .brand-story summary::-webkit-details-marker { display: none; }
+    .brand-story summary span { font-size: 1.35rem; font-weight: 400; }
+    .brand-story[open] summary span { transform: rotate(45deg); }
+    .brand-story p { color: #b3c6ce; font-size: .9rem; line-height: 1.9; padding-bottom: 1rem; margin: 0; }
+    @media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } .about-art { max-width: 440px; width: 100%; margin: 0 auto; } .about-content { order: -1; } .about-art img { max-width: 200px; } }
+    @media (max-width: 380px) { .values-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
   `]
 })
 export class AboutComponent {
   constructor(public translate: TranslateService) {}
+  get en() { return this.translate.getLang() === 'en'; }
 }

@@ -17,14 +17,10 @@ export class AnalyticsService {
   private scriptLoaded = false;
 
   constructor(private consent: ConsentService) {
-    // If user already granted consent earlier, load immediately
-    if (this.consent.isGranted()) {
-      this.loadGtag();
-    }
-    // react to future changes using Angular signal effect (signals don't have subscribe)
     effect(() => {
       const s = this.consent.consentState()();
-      if (s === 'granted' && !this.scriptLoaded) {
+      if (s === 'granted') {
+        window[`ga-disable-${MEASUREMENT_ID}`] = false;
         this.loadGtag();
       }
       if (s === 'denied') {
@@ -34,7 +30,7 @@ export class AnalyticsService {
   }
 
   private loadGtag() {
-    if (this.scriptLoaded) return;
+    if (this.scriptLoaded || !this.consent.isGranted()) return;
     // Prevent loading if opt-out flag is set
     if (window[`ga-disable-${MEASUREMENT_ID}`]) {
       return;
@@ -52,6 +48,8 @@ export class AnalyticsService {
   }
 
   private initializeGtag() {
+    // Consent can be revoked while the external script is downloading.
+    if (!this.consent.isGranted()) return;
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { (window.dataLayer as any[]).push(arguments); } as any;
     (window.gtag as any)('js', new Date());
@@ -61,12 +59,13 @@ export class AnalyticsService {
 
   // send an event (page_view or custom)
   sendEvent(name: string, params: Record<string, any> = {}) {
-    if (!window.gtag) return;
+    if (!this.consent.isGranted() || !window.gtag) return;
     window.gtag('event', name, { send_to: MEASUREMENT_ID, ...params });
   }
 
   // opt-out: set the disable flag and remove any stored consent
   optOut() {
+    this.scriptLoaded = false;
     try {
       window[`ga-disable-${MEASUREMENT_ID}`] = true;
       // best-effort: remove gtag script tags
@@ -91,8 +90,15 @@ export class AnalyticsService {
 
   private deleteCookie(name: string) {
     try {
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${location.hostname}`;
       document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      // Analytics may have written a cookie on a parent domain (for example
+      // .prochoco.com while this page is served from www.prochoco.com).
+      const segments = location.hostname.split('.');
+      for (let i = 0; i < segments.length - 1; i++) {
+        const domain = segments.slice(i).join('.');
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${domain}`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${domain}`;
+      }
     } catch(e) {}
   }
 }

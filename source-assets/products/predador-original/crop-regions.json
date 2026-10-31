@@ -1,0 +1,322 @@
+{
+  "source": "src/images/hero/collection-predador.jpg",
+  "processing": "Source pixels preserved in PNG crops; selection excludes neighbouring products. WebP resizes into a white canvas; the backing is a real blank-paper patch from the same JPEG at x1320,y1040,w200,h100. No generative processing.",
+  "photos": [
+    {
+      "name": "cavala-japonesa",
+      "rectangle": {
+        "left": 35,
+        "top": 280,
+        "width": 840,
+        "height": 315
+      },
+      "selection": [
+        [
+          0,
+          0
+        ],
+        [
+          825,
+          0
+        ],
+        [
+          840,
+          20
+        ],
+        [
+          840,
+          150
+        ],
+        [
+          680,
+          150
+        ],
+        [
+          680,
+          315
+        ],
+        [
+          0,
+          315
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 65850
+    },
+    {
+      "name": "zebra",
+      "rectangle": {
+        "left": 735,
+        "top": 75,
+        "width": 840,
+        "height": 250
+      },
+      "selection": [
+        [
+          0,
+          0
+        ],
+        [
+          840,
+          0
+        ],
+        [
+          840,
+          250
+        ],
+        [
+          105,
+          250
+        ],
+        [
+          105,
+          200
+        ],
+        [
+          0,
+          200
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 61446
+    },
+    {
+      "name": "uva-brava",
+      "rectangle": {
+        "left": 45,
+        "top": 580,
+        "width": 850,
+        "height": 260
+      },
+      "selection": [
+        [
+          0,
+          30
+        ],
+        [
+          230,
+          30
+        ],
+        [
+          320,
+          0
+        ],
+        [
+          695,
+          0
+        ],
+        [
+          850,
+          60
+        ],
+        [
+          850,
+          175
+        ],
+        [
+          640,
+          175
+        ],
+        [
+          640,
+          260
+        ],
+        [
+          0,
+          260
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 62706
+    },
+    {
+      "name": "matador",
+      "rectangle": {
+        "left": 725,
+        "top": 400,
+        "width": 845,
+        "height": 240
+      },
+      "selection": [
+        [
+          0,
+          70
+        ],
+        [
+          175,
+          30
+        ],
+        [
+          300,
+          0
+        ],
+        [
+          845,
+          0
+        ],
+        [
+          845,
+          240
+        ],
+        [
+          210,
+          240
+        ],
+        [
+          180,
+          230
+        ],
+        [
+          140,
+          215
+        ],
+        [
+          110,
+          190
+        ],
+        [
+          85,
+          180
+        ],
+        [
+          50,
+          175
+        ],
+        [
+          0,
+          175
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 65480
+    },
+    {
+      "name": "lula-em-chamas",
+      "rectangle": {
+        "left": 55,
+        "top": 855,
+        "width": 845,
+        "height": 280
+      },
+      "selection": [
+        [
+          0,
+          0
+        ],
+        [
+          680,
+          0
+        ],
+        [
+          700,
+          20
+        ],
+        [
+          750,
+          58
+        ],
+        [
+          785,
+          75
+        ],
+        [
+          790,
+          66
+        ],
+        [
+          800,
+          66
+        ],
+        [
+          845,
+          110
+        ],
+        [
+          845,
+          280
+        ],
+        [
+          0,
+          280
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 62694
+    },
+    {
+      "name": "cobra",
+      "rectangle": {
+        "left": 725,
+        "top": 710,
+        "width": 850,
+        "height": 250
+      },
+      "selection": [
+        [
+          0,
+          35
+        ],
+        [
+          160,
+          35
+        ],
+        [
+          160,
+          0
+        ],
+        [
+          850,
+          0
+        ],
+        [
+          850,
+          250
+        ],
+        [
+          270,
+          240
+        ],
+        [
+          215,
+          237
+        ],
+        [
+          185,
+          220
+        ],
+        [
+          165,
+          235
+        ],
+        [
+          148,
+          235
+        ],
+        [
+          130,
+          222
+        ],
+        [
+          95,
+          205
+        ],
+        [
+          90,
+          185
+        ],
+        [
+          0,
+          150
+        ]
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 57844
+    }
+  ]
+}

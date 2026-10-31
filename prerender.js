@@ -1,114 +1,54 @@
-const fs = require('fs');
-const path = require('path');
-const net = require('net');
-const { URL } = require('url');
+﻿const fs = require('node:fs');
+const path = require('node:path');
 const { chromium } = require('playwright');
+const { createSiteServer, appRoutes } = require('./scripts/static-server');
 
-// Routes to snapshot. Anchors for product cards will be auto-generated from products.json.
-const baseRoutes = ['/', '/privacy', '/terms', '/cookies'];
-
-// Try to read products.json to build anchor routes dynamically.
-function loadProductAnchors() {
+async function prerender() {
+  const source = path.resolve(__dirname, 'dist/prochoco');
+  const output = path.resolve(__dirname, 'dist/static');
+  if (!fs.existsSync(path.join(source, 'index.html'))) throw new Error('Run npm run build:prod before prerendering.');
+  // Remove only this generated output, after checking both its absolute path and real parent.
+  const projectRoot = fs.realpathSync(__dirname);
+  if (path.relative(projectRoot, output) !== path.join('dist', 'static') ||
+      fs.realpathSync(path.dirname(output)) !== path.join(projectRoot, 'dist')) {
+    throw new Error('Refusing to clean a static output directory outside this project.');
+  }
+  fs.rmSync(output, { recursive: true, force: true });
+  fs.mkdirSync(output, { recursive: true });
+  fs.cpSync(source, output, { recursive: true });
+  const server = createSiteServer(source, { appFallback: true });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const edgePath = 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
+  const executablePath = process.env.CHROME_PATH || (process.platform === 'win32' && fs.existsSync(edgePath) ? edgePath : undefined);
+  let browser;
   try {
-    const productsPath = path.resolve(__dirname, 'src', 'assets', 'products.json');
-    if (!fs.existsSync(productsPath)) return [];
-    const raw = fs.readFileSync(productsPath, 'utf8');
-    const products = JSON.parse(raw);
-    if (!Array.isArray(products)) return [];
-    return products.map(p => `/#product-${p.id}`);
-  } catch (e) {
-    console.warn('Could not load products.json for prerender anchors:', e.message || e);
-    return [];
+    browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+    const context = await browser.newContext({ reducedMotion: 'reduce' });
+    // Capture the real first visit. Never grant analytics consent on behalf of visitors.
+    await context.route('**/*', route => new URL(route.request().url()).origin === base ? route.continue() : route.abort());
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    for (const route of [...appRoutes, '/404/']) {
+      await page.goto(`${base}${route}`, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => window.__PROCHOCO_READY__ === true);
+      await page.waitForSelector('app-root h1');
+      await page.waitForFunction(() => document.documentElement.dataset.seoReady === 'true');
+      if (await page.locator('h1').count() !== 1) throw new Error(`Expected one h1 at ${route}`);
+      const html = await page.content();
+      const destination = route === '/404/' ? path.join(output, '404.html') : path.join(output, route.slice(1), 'index.html');
+      fs.mkdirSync(path.dirname(destination), { recursive: true });
+      fs.writeFileSync(destination, `${html}\n`, 'utf8');
+      console.log(`Prerendered ${route}`);
+    }
+    if (errors.length) throw new Error(`Browser errors during prerender: ${[...new Set(errors)].join('; ')}`);
+    fs.writeFileSync(path.join(output, '.nojekyll'), '');
+    console.log(`Static site ready: ${output} (${appRoutes.size} localized pages + 404)`);
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
   }
 }
 
-const routes = baseRoutes.concat(loadProductAnchors());
-
-(async () => {
-  const base = process.env.BASE_URL || 'http://localhost:4200';
-  // Before launching Playwright, ensure the target server is reachable to avoid confusing errors.
-  try {
-    const parsed = new URL(base);
-    const host = parsed.hostname;
-    let port = parsed.port ? Number(parsed.port) : (parsed.protocol === 'https:' ? 443 : 80);
-
-    await new Promise((resolve, reject) => {
-      const socket = net.createConnection({ host, port }, () => {
-        socket.destroy();
-        resolve();
-      });
-      socket.setTimeout(3000);
-      socket.on('error', (err) => reject(err));
-      socket.on('timeout', () => {
-        socket.destroy();
-        reject(new Error('timeout'));
-      });
-    });
-  } catch (err) {
-    console.error(`Cannot connect to ${base} — Playwright prerender requires the built site to be served at that URL.`);
-    console.error('Recommended steps:');
-    console.error('  1) Build the app:');
-    console.error('       npm run build:prod');
-    console.error('  2) Serve the built files (example using http-server):');
-    console.error('       npx http-server ./dist/prochoco -p 8080');
-    console.error('  3) Re-run the prerender script (PowerShell example):');
-    console.error("       $env:BASE_URL='http://localhost:8080'; npm run prerender");
-    process.exit(1);
-  }
-
-  const outDir = path.resolve(__dirname, 'prerendered');
-  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-
-  console.log(`Prerendering routes from ${base} → ${outDir}`);
-  const browser = await chromium.launch({ headless: true });
-  // Create a context so we can set an init script that runs before any page scripts.
-  const context = await browser.newContext();
-
-  // During prerender we want the consent banner hidden so snapshots contain
-  // the real page content. By default set the same storage key used by the
-  // app to 'granted'. Set PRERENDER_ACCEPT_CONSENT=false to opt out.
-  const acceptConsent = (process.env.PRERENDER_ACCEPT_CONSENT || '').toLowerCase() !== 'false';
-  if (acceptConsent) {
-    await context.addInitScript(() => {
-      try {
-        localStorage.setItem('prochoco_analytics_consent', 'granted');
-      } catch (e) {
-        // ignore
-      }
-    });
-  }
-
-  const page = await context.newPage();
-  let failures = 0;
-
-  for (const route of routes) {
-    const url = route.startsWith('/') ? `${base}${route}` : `${base}/${route}`;
-    try {
-      console.log(`-> ${url}`);
-      await page.goto(url, { waitUntil: 'networkidle' , timeout: 30000 });
-      // allow some client rendering if necessary
-      await page.waitForTimeout(400);
-      const html = await page.content();
-
-      // Normalize filename: / -> index.html, /privacy -> privacy.html, /#product-1 -> product-1.html
-      let filename = 'index.html';
-      if (route === '/') filename = 'index.html';
-      else if (route.startsWith('/#product-')) filename = `${route.replace('/#','')}.html`;
-      else filename = `${route.replace(/[^a-z0-9]/gi, '-').replace(/^-+|-+$/g, '')}.html`;
-
-      const outPath = path.join(outDir, filename);
-      fs.writeFileSync(outPath, html, 'utf8');
-      console.log(`  saved ${outPath}`);
-    } catch (err) {
-      failures++;
-      console.error(`  failed ${url}:`, err.message || err);
-    }
-  }
-
-  await browser.close();
-  console.log('Prerender complete. Serve the built site and open files from ./prerendered for crawlers or use them as static snapshots.');
-  if (failures > 0) {
-    console.error(`${failures} prerender route(s) failed — failing the process to surface issues.`);
-    process.exit(2);
-  }
-})();
+prerender().catch(error => { console.error(error); process.exitCode = 1; });

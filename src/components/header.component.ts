@@ -1,258 +1,81 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, signal } from '@angular/core';
+import { RouterLink, NavigationEnd, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '../app/services/translate.service';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'app-header', standalone: true, imports: [RouterLink],
   template: `
     <header class="header">
-      <nav class="nav-container">
-        <div class="logo" (click)="scrollTo('home')">
-          <img src="assets/images/logo.png" alt="PROCHOCO" class="mascot" />
-          <div class="brand-text">
-            <span class="brand-tagline">{{ translate.t('header.tagline') }}</span>
+      <nav class="nav-container container" [attr.aria-label]="translate.getLang() === 'en' ? 'Main navigation' : 'Navegação principal'">
+        <a class="logo" [routerLink]="translate.homePath()" fragment="home" [attr.aria-label]="translate.getLang() === 'en' ? 'PROCHOCO — Home' : 'PROCHOCO — Início'" (click)="closeMenu()">
+          <img src="assets/images/logo.webp" alt="PROCHOCO" width="220" height="70" fetchpriority="high" />
+          <span class="brand-tagline">{{ translate.t('header.tagline') }}</span>
+        </a>
+        <div class="nav-menu" id="main-navigation" [class.active]="isMenuOpen()">
+          @for (item of navItems; track item.id) {
+            <a class="nav-link" [routerLink]="translate.homePath()" [fragment]="item.id" (click)="closeMenu()">{{ translate.t(item.key) }}</a>
+          }
+          <a class="nav-contact" [routerLink]="translate.homePath()" fragment="contact" (click)="closeMenu()">{{ translate.t('nav.contact') }} <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="nav-actions">
+          <div class="lang-switch" role="group" [attr.aria-label]="translate.getLang() === 'en' ? 'Language' : 'Idioma'">
+            <button type="button" class="lang-btn" lang="pt-PT" aria-label="PT — Português" [attr.aria-pressed]="translate.getLang() === 'pt-PT'" (click)="setLang('pt-PT')">PT</button><span aria-hidden="true">/</span>
+            <button type="button" class="lang-btn" lang="en" aria-label="EN — English" [attr.aria-pressed]="translate.getLang() === 'en'" (click)="setLang('en')">EN</button>
           </div>
+          <button type="button" class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen()" aria-controls="main-navigation" [attr.aria-label]="translate.getLang() === 'en' ? (isMenuOpen() ? 'Close menu' : 'Open menu') : (isMenuOpen() ? 'Fechar menu' : 'Abrir menu')">
+            <span [class.open]="isMenuOpen()"></span><span [class.open]="isMenuOpen()"></span><span [class.open]="isMenuOpen()"></span>
+          </button>
         </div>
-
-        <div class="nav-menu" [class.active]="isMenuOpen()">
-          <a href="#home" class="nav-link" (click)="scrollTo('home')">{{ translate.t('nav.home') }}</a>
-          <a href="#products" class="nav-link" (click)="scrollTo('products')">{{ translate.t('nav.products') }}</a>
-          <a href="#about" class="nav-link" (click)="scrollTo('about')">{{ translate.t('nav.about') }}</a>
-          <a href="#contact" class="nav-link" (click)="scrollTo('contact')">{{ translate.t('nav.contact') }}</a>
-        </div>
-
-        <div class="lang-switch" role="group" aria-label="Language switch">
-          <button class="lang-btn" [class.active]="translate.getLang() === 'pt-PT'" (click)="setLang('pt-PT')">PT</button>
-          <button class="lang-btn" [class.active]="translate.getLang() === 'en'" (click)="setLang('en')">EN</button>
-        </div>
-
-        <button class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen()">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
       </nav>
     </header>
   `,
   styles: [`
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      cursor: pointer;
-      height: 80px;
-    }
-
-    .logo-img {
-      height: 100%;
-      width: auto;
-      max-width: 300px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
-      transition: transform 0.3s ease;
-    }
-
-    .mascot {
-      height: 64px;
-      margin-left: 12px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 6px rgba(0,0,0,0.4));
-      border-radius: 6px;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      line-height: 1.1;
-      margin-left: 0.5rem;
-    }
-
-    .brand-tagline {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      color: #94a3b8;
-      text-transform: uppercase;
-    }
-
-    .logo:hover .logo-img {
-      transform: scale(1.05);
-    }
-
-    .brand-name {
-      font-size: 1.35rem;
-      font-weight: 900;
-      color: #ffffff;
-      letter-spacing: 0.04em;
-      font-family: 'Arial Black', 'Inter', sans-serif;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-    }
-
-    .brand-underline {
-      width: 100px;
-      height: 3px;
-      background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
-      border-radius: 2px;
-      animation: underlineWave 3s ease-in-out infinite;
-    }
-
-    @keyframes underlineWave {
-      0%, 100% {
-        width: 100px;
-      }
-      50% {
-        width: 120px;
-      }
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .nav-link {
-      color: #e2e8f0;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      position: relative;
-    }
-
-    .nav-link:hover {
-      color: #3b82f6;
-      background: rgba(59, 130, 246, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .lang-switch {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      margin-left: 1rem;
-    }
-
-    .lang-btn {
-      padding: 0.35rem 0.6rem;
-      border-radius: 6px;
-      border: 1px solid rgba(226,232,240,0.08);
-      background: transparent;
-      color: #e2e8f0;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .lang-btn.active {
-      background: #e2e8f0;
-      color: #0f172a;
-      transform: translateY(-1px);
-    }
-
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    .menu-toggle span {
-      width: 25px;
-      height: 2px;
-      background: #e2e8f0;
-      transition: all 0.3s ease;
-      margin: 2px 0;
-    }
-
-    @media (max-width: 768px) {
-      .nav-menu {
-        position: fixed;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(15, 23, 42, 0.98);
-        flex-direction: column;
-        padding: 2rem;
-        transform: translateY(-100vh);
-        transition: transform 0.3s ease;
-        border-top: 1px solid rgba(59, 130, 246, 0.2);
-      }
-
-      .brand-tagline {
-        display: none;
-      }
-
-      .nav-menu.active {
-        transform: translateY(0);
-      }
-
-      .menu-toggle {
-        display: flex;
-      }
-
-      .menu-toggle span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-      }
-
-      .menu-toggle span:nth-child(2) {
-        opacity: 0;
-      }
-
-      .menu-toggle span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -6px);
-      }
+    :host { display: block; position: sticky; top: 0; z-index: 1000; }
+    .header { background: #071723; border-bottom: 1px solid #233b48; }
+    .nav-container { display: flex; align-items: center; gap: 2rem; min-height: 96px; }
+    .logo { display: flex; flex-direction: column; align-items: flex-start; margin-right: auto; padding-block: 10px; }
+    .logo:hover { text-decoration: none; }
+    .logo img { width: 180px; height: auto; }
+    .brand-tagline { color: #b0c4cc; font-size: .55rem; font-weight: 600; letter-spacing: .16em; margin: 4px 0 0 3px; }
+    .nav-menu { display: flex; align-items: center; gap: 1.75rem; }
+    .nav-link { font-size: .85rem; font-weight: 500; color: #c6d4d9; padding-block: 12px; }
+    .nav-link:hover { color: #73e1cf; text-decoration: none; }
+    .nav-contact { padding: .6rem 1rem; border: 1px solid #53707d; border-radius: 4px; color: #edf5f6; font-size: .85rem; font-weight: 600; }
+    .nav-contact span { margin-left: .7rem; color: #73e1cf; }
+    .nav-contact:hover { border-color: #73e1cf; text-decoration: none; }
+    .nav-actions, .lang-switch { display: flex; align-items: center; }
+    .lang-switch { gap: .15rem; font-size: .7rem; color: #849da7; }
+    .lang-btn { min-height: 44px; min-width: 36px; background: transparent; border: 0; color: #adbec6; font-size: .72rem; font-weight: 600; }
+    .lang-btn[aria-pressed=true] { color: #73e1cf; text-decoration: underline; text-underline-offset: 6px; }
+    .menu-toggle { display: none; width: 44px; height: 44px; background: transparent; border: 1px solid #49626f; border-radius: 4px; padding: 10px; }
+    .menu-toggle span { display: block; height: 2px; background: #edf5f6; margin: 4px 0; transition: transform .18s, opacity .18s; }
+    .menu-toggle span.open:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .menu-toggle span.open:nth-child(2) { opacity: 0; }
+    .menu-toggle span.open:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    @media(max-width: 850px) {
+      .nav-container { min-height: 78px; gap: 1rem; }
+      .logo img { width: 145px; }
+      .brand-tagline { display: none; }
+      .nav-actions { gap: .7rem; }
+      .menu-toggle { display: block; }
+      .nav-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; padding: 1.25rem 1.5rem 1.75rem; background: #0d2433; border-bottom: 1px solid #49626f; box-shadow: 0 16px 25px #0003; }
+      .nav-menu.active { display: flex; flex-direction: column; align-items: stretch; gap: .2rem; }
+      .nav-link { padding: .8rem 0; font-size: 1rem; }
+      .nav-contact { margin-top: .6rem; text-align: center; }
     }
   `]
 })
 export class HeaderComponent {
-  isMenuOpen = signal(false);
-  constructor(public translate: TranslateService) {}
-
-  toggleMenu() {
-    this.isMenuOpen.update(value => !value);
+  readonly isMenuOpen = signal(false);
+  readonly navItems = [{id: 'home', key: 'nav.home'}, {id: 'products', key: 'nav.products'}, {id: 'about', key: 'nav.about'}];
+  constructor(public translate: TranslateService, router: Router) {
+    router.events.pipe(takeUntilDestroyed()).subscribe(event => { if (event instanceof NavigationEnd) this.closeMenu(); });
   }
-
-  scrollTo(elementId: string) {
-    this.isMenuOpen.set(false);
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  toggleMenu() { this.isMenuOpen.update(value => !value); }
+  closeMenu() { this.isMenuOpen.set(false); }
+  @HostListener('document:keydown.escape') onEscape() {
+    if (this.isMenuOpen()) { this.closeMenu(); document.querySelector<HTMLButtonElement>('.menu-toggle')?.focus(); }
   }
-
-  setLang(lang: 'en' | 'pt-PT') {
-    this.translate.setLang(lang);
-  }
+  setLang(lang: 'en' | 'pt-PT') { this.closeMenu(); this.translate.setLang(lang); }
 }

@@ -1,793 +1,219 @@
-import { Component, signal, computed } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "../app/services/translate.service";
-
-interface Product {
-  id: number;
-  name: string;
-  categoryKey: string;
-  sizeNumber: string;
-  sizeLength: string;
-  weight: string;
-  sinking: string;
-  image: string;
-  description: string;
-  featureKeys: string[];
-}
+import { Component, computed, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '../app/services/translate.service';
+import { Product, PRODUCTS } from '../app/data/products';
 
 @Component({
-  selector: "app-products",
+  selector: 'app-products',
   standalone: true,
-  imports: [CommonModule],
   template: `
-    <section id="products" class="products-section">
+    <section id="products" class="products-section" aria-labelledby="catalogue-title">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">{{ translate.t("products.title") }}</h2>
-          <p class="section-subtitle">{{ translate.t("products.subtitle") }}</p>
+          <div>
+            <p class="eyebrow">{{ text('O EQUIPAMENTO', 'THE EQUIPMENT') }}</p>
+            <h2 id="catalogue-title">{{ text('O teu próximo palhaço.', 'Your next cephalopod jig.') }}</h2>
+          </div>
+          <p class="section-intro">{{ text('Explora a série PREDADOR e os modelos CIRCUS e PINTAS. Compara tamanhos, acabamentos e condições de utilização.', 'Explore the PREDADOR series and the CIRCUS and PINTAS models. Compare sizes, finishes and fishing conditions.') }}</p>
         </div>
-
-        <div class="filter-tabs">
-          @for (category of categories(); track category) {
-            <button
-              class="filter-btn"
-              [class.active]="selectedCategory() === category"
-              (click)="setCategory(category)"
-            >
-              {{ getTranslatedCategory(category) }}
-            </button>
-          }
+        <div class="catalogue-toolbar">
+          <div class="filter-group" role="group" [attr.aria-label]="text('Filtrar por modelo', 'Filter by model')">
+            @for (series of seriesFilters; track series.value) {
+              <button type="button" class="filter-btn" [class.active]="selectedSeries() === series.value"
+                [attr.aria-pressed]="selectedSeries() === series.value" (click)="selectedSeries.set(series.value)">
+                {{ series.value === 'all' ? text('Todos', 'All models') : series.label }}
+              </button>
+            }
+          </div>
+          <div class="size-filter">
+            <label for="catalogue-size">{{ text('Tamanho', 'Size') }}</label>
+            <select id="catalogue-size" [value]="selectedSize()" (change)="setSize($event)">
+              <option value="all">{{ text('Todos os tamanhos', 'All sizes') }}</option>
+              <option value="2.5">2.5 · 10 cm</option><option value="3.0">3.0 · 12 cm</option>
+            </select>
+          </div>
         </div>
-
+        <p class="catalogue-count" role="status" aria-live="polite" aria-atomic="true">
+          {{ filteredProducts().length }} {{ text('de', 'of') }} {{ products.length }} {{ text('produtos', 'products') }}
+        </p>
         <div class="products-grid">
           @for (product of filteredProducts(); track product.id) {
-            <div
-              id="product-{{ product.id }}"
-              class="product-card"
-              (mouseenter)="setHoveredProduct(product.id)"
-              (mouseleave)="setHoveredProduct(null)"
-            >
+            <article id="product-{{ product.id }}" class="product-card" [attr.aria-labelledby]="'product-title-' + product.id">
               <div class="product-image">
-                <img [src]="product.image" [alt]="product.name" />
+                <span class="size-badge">{{ product.sizeNumber }}</span>
+                <img [src]="product.image" [alt]="product.name + ' · ' + product.sizeNumber + ' · ' + product.sizeLength"
+                  [width]="imageDimensions[product.id][0]" [height]="imageDimensions[product.id][1]" loading="lazy" decoding="async" />
               </div>
               <div class="product-info">
-                <div class="product-header">
-                  <h3 class="product-name">{{ product.name }}</h3>
-                </div>
-                <div
-                  class="product-description"
-                  [innerHTML]="getFormattedDescription(product.description)"
-                ></div>
-                <div class="product-specs">
-                  <div class="spec">
-                    <span class="spec-label">{{
-                      translate.t("product.spec.size")
-                    }}</span>
-                    <div class="spec-value">
-                      <div>{{ product.sizeNumber }}</div>
-                      <div>{{ product.sizeLength }}</div>
-                    </div>
+                <p class="product-series">{{ seriesName(product) }}@if (product.series === 'predador') { · {{ product.sizeNumber }} }</p>
+                <h3 id="product-title-{{ product.id }}">{{ product.shortName }}</h3>
+                @if (product.finish) { <p class="product-finish">{{ text('Acabamento', 'Finish') }}: <strong>{{ product.finish }}</strong></p> }
+                <dl class="product-specs">
+                  <div><dt>{{ text('Comprimento', 'Length') }}</dt><dd>{{ product.sizeLength }}</dd></div>
+                  <div><dt>{{ text('Peso', 'Weight') }}</dt><dd>{{ product.weight }}</dd></div>
+                  <div><dt>{{ text('Afundamento', 'Sink rate') }}</dt><dd>{{ product.sinking }}</dd></div>
+                </dl>
+                <ul class="product-features" [attr.aria-label]="text('Características', 'Features')">
+                  @for (featureKey of product.featureKeys; track featureKey) { <li>{{ translate.t(featureKey) }}</li> }
+                </ul>
+                <details class="product-description">
+                  <summary>{{ text('Quando usar este modelo', 'When to use this model') }} <span aria-hidden="true">+</span></summary>
+                  <div class="description-content">
+                    @for (paragraph of descriptionLines(product); track $index) {
+                      <p [class.description-question]="$first">{{ paragraph }}</p>
+                    }
                   </div>
-                  <div class="spec">
-                    <span class="spec-label">{{
-                      translate.t("product.spec.weight")
-                    }}</span>
-                    <span class="spec-value">{{ product.weight }}</span>
-                  </div>
-                  <div class="spec">
-                    <span class="spec-label">{{
-                      translate.t("product.spec.sinking")
-                    }}</span>
-                    <span class="spec-value">{{ product.sinking }}</span>
-                  </div>
-                </div>
-                <div class="product-features">
-                  @for (featureKey of product.featureKeys; track featureKey) {
-                    <div class="feature-tag">
-                      {{ translate.t(featureKey) }}
-                    </div>
-                  }
-                </div>
-                <script
-                  type="application/ld+json"
-                  [innerHTML]="getProductJsonLd(product)"
-                ></script>
+                </details>
               </div>
+            </article>
+          } @empty {
+            <div class="empty-state">
+              <h3>{{ text('Sem modelos nesta combinação.', 'No models match these filters.') }}</h3>
+              <p>{{ text('Experimenta outro tamanho ou consulta o catálogo completo.', 'Try another size or browse the complete catalogue.') }}</p>
+              <button type="button" class="reset-btn" (click)="resetFilters()">{{ text('Ver todos os produtos', 'View all products') }}</button>
             </div>
           }
         </div>
-
-        <div class="retailers-strip">
-          <div class="retailers-inner">
-            <span class="retailers-label">{{ translate.t("products.retailers.label") }}</span>
-            <div class="retailers-links">
-              <a href="https://balanzol.com/pt/brand/234-prochoco" target="_blank" rel="noopener noreferrer" class="retailer-link">Balanzol</a>
-              <a href="https://www.tomaraventura.pt/pt/248_prochoco" target="_blank" rel="noopener noreferrer" class="retailer-link">TomarAventura</a>
-              <a href="https://idealpesca.pt/loja/amostras-toneiras-palhacos/03-08-19-prochoco" target="_blank" rel="noopener noreferrer" class="retailer-link">Ideal Pesca</a>
-              <a href="https://lojadojaime.pt/marca/prochoco/" target="_blank" rel="noopener noreferrer" class="retailer-link">Loja do Jaime</a>
-              <a href="https://lojatudopesca.com/36631-prochoco-squid-30-cor-circus.html" target="_blank" rel="noopener noreferrer" class="retailer-link">TudoPesca</a>
-              <a href="https://espingardarialucio.com/loja/index.php?id_manufacturer=74&controller=manufacturer" target="_blank" rel="noopener noreferrer" class="retailer-link">Espingardaria Lúcio</a>
-              <a href="https://www.estreladomar.pt/" target="_blank" rel="noopener noreferrer" class="retailer-link">Estrela do Mar</a>
-              <a href="https://www.facebook.com/novapescas/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="retailer-link">Nova Pesca</a>
-              <a href="https://www.facebook.com/p/Espingardaria-Mirobriga-61556277698212/" target="_blank" rel="noopener noreferrer" class="retailer-link">Espingardaria Mirobriga</a>
-              <a href="https://www.facebook.com/cacapesca09/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="retailer-link">Caça & Pesca</a>
-              <a href="https://www.facebook.com/BEMPESCAR/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="retailer-link">Bem Pescar</a>
-              <a href="https://anzoldosado.sumupstore.com/" target="_blank" rel="noopener noreferrer" class="retailer-link">Anzol do Sado</a>
-              <a href="https://www.facebook.com/p/Sado-Pesca-100063552639173/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="retailer-link">Sado Pesca</a>
-              <a href="https://www.facebook.com/p/Fisgapeixe-100059731135858/?locale=pt_PT" target="_blank" rel="noopener noreferrer" class="retailer-link">Fisga Peixe</a>
-            </div>
+        <section id="retailers" class="retailers-strip" aria-labelledby="retailers-title">
+          <div class="retailers-header">
+            <div><p class="eyebrow">{{ text('PERTO DE TI', 'NEAR YOU') }}</p><h3 id="retailers-title">{{ text('Encontra a PROCHOCO.', 'Find PROCHOCO.') }}</h3></div>
+            <p>{{ text('Consulta os nossos produtos nas lojas e revendedores.', 'Browse our products at these shops and retailers.') }}</p>
           </div>
-        </div>
-
-        <div class="cta-section">
-          <h3>{{ translate.t("products.cta.title") }}</h3>
-          <p>{{ translate.t("products.cta.text") }}</p>
-          <div class="contact-item">
-            <span class="contact-icon">📧</span>
-            <span>{{ translate.t("footer.contact.email") }}</span>
+          <div class="retailers-links">
+            @for (retailer of retailers; track retailer.name) {
+              <a [href]="retailer.url" target="_blank" rel="noopener noreferrer" class="retailer-link">
+                {{ retailer.name }}<span aria-hidden="true">↗</span><span class="sr-only">{{ text(' (abre numa nova janela)', ' (opens in a new window)') }}</span>
+              </a>
+            }
           </div>
-          <!-- <button class="btn btn-primary" (click)="scrollToContact()">
-            {{ translate.t("products.cta.button") }}
-          </button> -->
+        </section>
+        <div class="catalogue-cta">
+          <div>
+            <p class="eyebrow">{{ text('PARCERIAS & REVENDA', 'PARTNERSHIPS & RETAIL') }}</p>
+            <h3>{{ text('Leva a PROCHOCO para a tua loja.', 'Bring PROCHOCO to your shop.') }}</h3>
+            <p>{{ translate.t('products.cta.text') }}</p>
+          </div>
+          <a class="catalogue-contact" href="mailto:prochocofishing@gmail.com">{{ text('Falar sobre revenda', 'Enquire about wholesale') }} <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
   `,
-  styles: [
-    `
-      .products-section {
-        padding: 6rem 2rem;
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-
-      .section-header {
-        text-align: center;
-        margin-bottom: 4rem;
-      }
-
-      .section-title {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #f1f5f9;
-        margin-bottom: 1rem;
-      }
-
-      .section-subtitle {
-        font-size: 1.25rem;
-        color: #cbd5e1;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
-      }
-
-      .filter-tabs {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 3rem;
-        flex-wrap: wrap;
-      }
-
-      .filter-btn {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid rgba(59, 130, 246, 0.3);
-        background: transparent;
-        color: #cbd5e1;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-      }
-
-      .filter-btn:hover,
-      .filter-btn.active {
-        background: #3b82f6;
-        color: white;
-        border-color: #3b82f6;
-        transform: translateY(-2px);
-      }
-
-      .products-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-bottom: 4rem;
-      }
-
-      .product-card {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        overflow: hidden;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-      }
-
-      .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      }
-
-      .product-image {
-        position: relative;
-        height: 250px;
-        overflow: hidden;
-      }
-
-      .madein-tag {
-        position: absolute;
-        top: 0.875rem;
-        left: 0.875rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.35rem 0.8rem;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(59, 130, 246, 0.35);
-        border-radius: 40px;
-        color: #f1f5f9;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        backdrop-filter: blur(8px);
-        z-index: 2;
-      }
-
-      .madein-icon {
-        width: 13px;
-        height: 13px;
-        color: #3b82f6;
-        flex-shrink: 0;
-      }
-
-      .product-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-      }
-
-      .product-card:hover .product-image img {
-        transform: scale(1.1);
-      }
-
-      .product-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(59, 130, 246, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .product-overlay.visible {
-        opacity: 1;
-      }
-
-      .overlay-btn {
-        background: white;
-        color: #3b82f6;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-      }
-
-      .overlay-btn:hover {
-        transform: scale(1.05);
-      }
-
-      .product-info {
-        padding: 1.5rem;
-      }
-
-      .product-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-      }
-
-      .product-name {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #f1f5f9;
-        margin: 0;
-      }
-
-      .product-price {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #3b82f6;
-      }
-
-      .product-description {
-        color: #cbd5e1;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-      }
-
-      .desc-question {
-        color: #60a5fa;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
-      }
-
-      .desc-line {
-        color: #cbd5e1;
-        margin-bottom: 0.35rem;
-        padding-left: 0.5rem;
-      }
-
-      .product-specs {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-      }
-
-      .spec {
-        display: flex;
-        flex-direction: column;
-        font-size: 0.875rem;
-        gap: 0.25rem;
-      }
-
-      .spec-label {
-        padding-right: 5px;
-        color: #94a3b8;
-      }
-
-      .spec-value {
-        color: #cbd5e1;
-        font-weight: 600;
-        display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
-        line-height: 1.2;
-      }
-
-      .product-colors {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-      }
-
-      .colors-label {
-        font-size: 0.875rem;
-        color: #94a3b8;
-      }
-
-      .color-dots {
-        display: flex;
-        gap: 0.25rem;
-      }
-
-      .color-dot {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        cursor: pointer;
-        transition: transform 0.2s ease;
-      }
-
-      .color-dot:hover {
-        transform: scale(1.2);
-      }
-
-      .product-features {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .feature-tag {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: #ffffff;
-        padding: 0.5rem 0.875rem;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .retailers-strip {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 4rem;
-      }
-
-      .retailers-inner {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 1.25rem 2rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-      }
-
-      .retailers-label {
-        color: #94a3b8;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .retailers-links {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-
-      .retailer-link {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        border-radius: 30px;
-        background: rgba(59, 130, 246, 0.1);
-        color: #bfdbfe;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.25s ease;
-      }
-
-      .retailer-link:hover {
-        background: #3b82f6;
-        color: #ffffff;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
-      }
-
-      .cta-section {
-        text-align: center;
-        background: rgba(59, 130, 246, 0.1);
-        padding: 3rem 2rem;
-        border-radius: 16px;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-      }
-
-      .cta-section h3 {
-        font-size: 2rem;
-        color: #f1f5f9;
-        margin-bottom: 1rem;
-      }
-
-      .cta-section p {
-        color: #cbd5e1;
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
-      }
-
-      .btn {
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 1rem;
-      }
-
-      .btn-primary {
-        background: linear-gradient(45deg, #3b82f6, #06b6d4);
-        color: white;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-      }
-
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-      }
-
-      @media (max-width: 768px) {
-        .products-section {
-          padding: 4rem 1rem;
-        }
-
-        .section-title {
-          font-size: 2rem;
-        }
-
-        .products-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .product-specs {
-          grid-template-columns: 1fr;
-        }
-      }
-    `,
-  ],
+  styles: [`
+    :host { display: block; }
+    .products-section { background: #f4f7f6; color: #112c3c; padding: 6.5rem 0; }
+    .container { margin-inline: auto; }
+    .section-header { display: grid; grid-template-columns: 1.15fr 1fr; align-items: end; gap: 3rem; margin-bottom: 2.5rem; }
+    .eyebrow { font-size: .72rem; font-weight: 750; letter-spacing: .16em; color: #156393; margin-bottom: .8rem; }
+    h2 { font-size: clamp(2rem, 4vw, 3.15rem); line-height: 1.12; letter-spacing: -.045em; font-weight: 750; margin: 0; }
+    .section-intro { max-width: 30rem; color: #536874; font-size: 1rem; line-height: 1.75; margin: 0; }
+    .catalogue-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.2rem; border-top: 1px solid #d8e2e3; border-bottom: 1px solid #d8e2e3; }
+    .filter-group { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .filter-btn { padding: .7rem 1.1rem; min-height: 44px; border: 1px solid transparent; border-radius: 6px; font: inherit; font-size: .85rem; font-weight: 650; color: #536874; background: transparent; cursor: pointer; transition: background .2s, color .2s; }
+    .filter-btn:hover { color: #112c3c; background: #e5eceb; }
+    .filter-btn.active { background: #112c3c; color: #fff; }
+    .size-filter { display: flex; align-items: center; gap: .75rem; font-size: .8rem; color: #536874; }
+    select { min-height: 44px; border: 1px solid #becdd0; border-radius: 6px; background: #fff; color: #112c3c; padding: .6rem .75rem; font: inherit; font-size: .85rem; }
+    .catalogue-count { color: #536874; font-size: .8rem; margin: 1rem 0 1.25rem; }
+    .products-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.35rem; align-items: start; }
+    .product-card { background: #fff; border: 1px solid #dce5e5; border-radius: 12px; overflow: hidden; scroll-margin-top: 7rem; transition: border-color .2s, box-shadow .2s; }
+    .product-card:hover, .product-card:focus-within { border-color: #a9c3ca; box-shadow: 0 8px 24px #112c3c09; }
+    .product-image { position: relative; aspect-ratio: 1.5; background: #fff; border-bottom: 1px solid #edf1f1; overflow: hidden; }
+    .product-image img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .25s; }
+    .product-card:hover img { transform: scale(1.025); }
+    .size-badge { position: absolute; z-index: 1; top: .9rem; right: .9rem; color: #112c3c; background: #f4f7f6; border: 1px solid #dce5e5; border-radius: 4px; padding: .25rem .5rem; font-size: .75rem; font-weight: 750; }
+    .product-info { padding: 1.3rem; }
+    .product-series { font-size: .65rem; font-weight: 750; letter-spacing: .13em; color: #156393; margin: 0 0 .4rem; }
+    .product-info h3 { font-size: 1.1rem; font-weight: 750; letter-spacing: -.02em; line-height: 1.35; margin: 0 0 1.25rem; }
+    .product-finish { color: #536874; font-size: .75rem; line-height: 1.5; margin: -.65rem 0 1.25rem; }
+    .product-finish strong { color: #365a61; font-weight: 650; }
+    .product-specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 0 0 1rem; padding-bottom: 1.1rem; border-bottom: 1px solid #e8eeee; }
+    dt { font-size: .72rem; color: #536874; margin-bottom: .25rem; }
+    dd { margin: 0; font-size: .85rem; font-weight: 700; color: #112c3c; }
+    .product-features { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; padding: 0; margin: 0 0 1.15rem; min-height: 3.5rem; align-content: start; }
+    .product-features li { padding: .25rem .5rem; border-radius: 4px; background: #eef5f4; color: #365a61; font-size: .7rem; font-weight: 600; line-height: 1.5; }
+    .product-description { border-top: 1px solid #e8eeee; }
+    summary { padding-top: 1rem; min-height: 44px; color: #156393; font-weight: 650; font-size: .78rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: .75rem; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary span { font-size: 1.25rem; font-weight: 400; transition: transform .2s; }
+    details[open] summary span { transform: rotate(45deg); }
+    .description-content { padding-top: 1rem; color: #536874; font-size: .8rem; line-height: 1.75; }
+    .description-content p { margin-bottom: .75rem; }
+    .description-content .description-question { font-weight: 650; color: #112c3c; }
+    .empty-state { grid-column: 1 / -1; border: 1px dashed #becdd0; border-radius: 12px; text-align: center; padding: 3rem 1.5rem; }
+    .empty-state h3 { font-size: 1.3rem; margin-bottom: .75rem; }
+    .empty-state p { color: #536874; font-size: .95rem; }
+    .reset-btn { background: #112c3c; color: white; padding: .8rem 1.2rem; min-height: 44px; border: none; border-radius: 6px; cursor: pointer; font: inherit; font-size: .9rem; }
+    .retailers-strip { margin-top: 4.5rem; padding-top: 3rem; border-top: 1px solid #d8e2e3; }
+    .retailers-header { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
+    .retailers-header h3 { font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 750; letter-spacing: -.035em; }
+    .retailers-header > p { color: #536874; max-width: 20rem; font-size: .9rem; margin: 0; }
+    .retailers-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; }
+    .retailer-link { background: white; display: flex; justify-content: space-between; align-items: center; gap: .5rem; border: 1px solid #dce5e5; color: #112c3c; padding: .8rem 1rem; border-radius: 6px; min-height: 48px; font-size: .8rem; font-weight: 650; transition: border-color .2s, background .2s; }
+    .retailer-link span[aria-hidden] { color: #156393; }
+    .retailer-link:hover { background: #eaf3f1; border-color: #a9c3ca; }
+    .catalogue-cta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 3rem; padding: 2.3rem; background: #0d2433; border-radius: 12px; color: white; }
+    .catalogue-cta .eyebrow { color: #73e1cf; }
+    .catalogue-cta h3 { font-size: clamp(1.45rem, 2.5vw, 1.85rem); letter-spacing: -.025em; font-weight: 700; margin-bottom: .7rem; }
+    .catalogue-cta p:last-child { color: #c5d3d9; max-width: 35rem; font-size: .9rem; margin: 0; }
+    .catalogue-contact { display: inline-flex; justify-content: center; align-items: center; gap: 1rem; flex-shrink: 0; border-radius: 6px; padding: .95rem 1.2rem; background: #73e1cf; color: #071723; font-size: .85rem; font-weight: 750; min-height: 48px; transition: background .2s; }
+    .catalogue-contact:hover { background: #a1f1e4; color: #071723; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    @media (max-width: 1050px) { .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .retailers-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } .catalogue-cta { align-items: start; flex-direction: column; } }
+    @media (max-width: 700px) {
+      .products-section { padding-block: 4rem; } .section-header { grid-template-columns: 1fr; gap: 1.25rem; margin-bottom: 2rem; }
+      .catalogue-toolbar { align-items: start; flex-direction: column; } .filter-group { width: 100%; }
+      .filter-btn { flex: 1; font-size: .76rem; padding-inline: .65rem; } .size-filter { width: 100%; justify-content: space-between; }
+      .products-grid { gap: 1rem; } .retailers-header { align-items: start; flex-direction: column; gap: 1rem; }
+      .retailers-links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .catalogue-cta { padding: 1.5rem; }
+    }
+    @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr; } .product-info { padding: 1.25rem; } .retailer-link { padding: .75rem; font-size: .75rem; } .catalogue-contact { width: 100%; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  `],
 })
 export class ProductsComponent {
-  hoveredProduct = signal<number | null>(null);
-  selectedCategory = signal("all");
-  products = signal<Product[]>([
-    {
-      id: 5,
-      name: "PROCHOCO PREDADOR 01 - CAVALA JAPONESA",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/cavala2.5.png",
-      description:
-        'Quando usar o "cavala japonesa"?  \nDurante o dia, sobretudo com sol alto e água clara: o corpo dourado reflete a luz, imitando um cardume de sardinha ou cavala junto à superfície.\n\nÉ um padrão muito eficaz em águas límpidas, onde o dourado sólido se destaca por contraste com o brilho intenso do sol.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.goldBody",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 6,
-      name: "PROCHOCO PREDADOR 02 - ZEBRA",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/zebra2.5.png",
-      description:
-        'Quando usar a "zebra"?  \nO corpo glow acumula luz e brilha no escuro, mantendo o isco visível quando a luz é pouca.\n\nAs riscas a preto e branco criam um contraste máximo, ideal para água turva, dias nublados, ao amanhecer, ao entardecer e durante a noite.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.glowBody",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 7,
-      name: "PROCHOCO PREDADOR 03 - UVA BRAVA",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/uvabrava2.5.png",
-      description:
-        'Quando usar a "uva brava"?  \nO vermelho é dos tons mais eficazes ao amanhecer e ao entardecer, quando a água ganha um tom avermelhado.\n\nO roxo (uva) é das últimas cores a desaparecer com a profundidade, funcionando bem quando a luz é fraca ou a água está mais carregada.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.redBody",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 8,
-      name: "PROCHOCO PREDADOR 04 - O MATADOR",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/matador2.5.png",
-      description:
-        'Quando usar "o matador"?  \nO corpo roxo reflete a luz e é das últimas cores a desaparecer com a profundidade, mantendo o isco visível em pouca luz e água mais escura.\n\nO dorso verde claro com riscas azuis garante contraste, excelente à noite e durante o crepúsculo.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.purpleBody",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 9,
-      name: "PROCHOCO PREDADOR 05 - LULA EM CHAMAS",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/lulachamas2.5.png",
-      description:
-        'Quando usar a "lula em chamas"?  \nO corpo rainbow é muito versátil, funcionando durante todo o dia em vários tipos de água.\n\nO degradê em tons de roxo e rosa é especialmente eficaz ao amanhecer e ao entardecer, quando a luz muda rapidamente.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.rainbow",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 10,
-      name: "PROCHOCO PREDADOR 06 - COBRA",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/cobra2.5.png",
-      description:
-        'Quando usar a "cobra"?  \nO dourado sólido destaca-se por silhueta no sol alto e na luz intensa, funcionando muito bem em dias de sol e água clara.\n\nO corpo dourado reflete a luz como um cardume de pequenos peixes, aumentando a atração à distância.\n\nA pinta junto às agulhas, semelhante a um olho, funciona como um ponto de atração visual. Ao explorar o comportamento natural do choco, que tende a atacar a presa pela zona da cabeça, ajuda a direcionar o ataque para a área das agulhas.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.goldBody",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 1,
-      name: "PROCHOCO CIRCUS",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/circus2.5.png",
-      description:
-        'Quando usar um palhaço "rainbow"? \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.rainbow",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 2,
-      name: "PROCHOCO PINTAS",
-      categoryKey: "product.category.squid",
-      sizeNumber: "2.5",
-      sizeLength: "10 cm",
-      weight: "10g",
-      sinking: "5.0 s/m",
-      image: "assets/images/products/pintas2.5.png",
-      description:
-        'Quando usar um palhaço "rainbow"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.rainbow",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 3,
-      name: "PROCHOCO CIRCUS",
-      categoryKey: "product.category.squid",
-      sizeNumber: "3.0",
-      sizeLength: "12 cm",
-      weight: "16g",
-      sinking: "3.5 s/m",
-      image: "assets/images/products/circus3.0.png",
-      description:
-        'Quando usar um palhaço "rainbow"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.rainbow",
-        "product.feature.laser",
-      ],
-    },
-    {
-      id: 4,
-      name: "PROCHOCO PINTAS",
-      categoryKey: "product.category.squid",
-      sizeNumber: "3.0",
-      sizeLength: "12 cm",
-      weight: "16g",
-      sinking: "3.5 s/m",
-      image: "assets/images/products/pintas3.0.png",
-      description:
-        'Quando usar um palhaço "rainbow"?  \nDurante o dia, sobretudo quando o sol já está mais alto.\n\nÉ um padrão muito versátil, funcionando bem em vários tipos de água, desde mais clara até ligeiramente turva.',
-      featureKeys: [
-        "product.feature.bkk",
-        "product.feature.glow",
-        "product.feature.rainbow",
-        "product.feature.laser",
-      ],
-    },
-  ]);
-
-  constructor(
-    public translate: TranslateService,
-    private sanitizer: DomSanitizer,
-  ) {}
-
-  categories = computed(() => {
-    const uniqueCategories = [
-      ...new Set(this.products().map((p) => p.categoryKey)),
-    ];
-    return ["all", ...uniqueCategories];
-  });
-
-  filteredProducts = computed(() => {
-    if (this.selectedCategory() === "all") {
-      return this.products();
-    }
-    return this.products().filter(
-      (p) => p.categoryKey === this.selectedCategory(),
-    );
-  });
-
-  setCategory(category: string) {
-    this.selectedCategory.set(category);
+  readonly products = PRODUCTS;
+  readonly seriesFilters = [
+    { value: 'all', label: '' }, { value: 'predador', label: 'PREDADOR' },
+    { value: 'circus', label: 'CIRCUS' }, { value: 'pintas', label: 'PINTAS' },
+  ];
+  readonly retailers = [
+    { name: 'Balanzol', url: 'https://balanzol.com/pt/brand/234-prochoco' },
+    { name: 'TomarAventura', url: 'https://www.tomaraventura.pt/pt/248_prochoco' },
+    { name: 'Ideal Pesca', url: 'https://idealpesca.pt/loja/amostras-toneiras-palhacos/03-08-19-prochoco' },
+    { name: 'Loja do Jaime', url: 'https://lojadojaime.pt/marca/prochoco/' },
+    { name: 'TudoPesca', url: 'https://lojatudopesca.com/36631-prochoco-squid-30-cor-circus.html' },
+    { name: 'Espingardaria Lúcio', url: 'https://espingardarialucio.com/loja/index.php?id_manufacturer=74&controller=manufacturer' },
+    { name: 'Estrela do Mar', url: 'https://www.estreladomar.pt/' },
+    { name: 'Nova Pesca', url: 'https://www.facebook.com/novapescas/?locale=pt_PT' },
+    { name: 'Espingardaria Mirobriga', url: 'https://www.facebook.com/p/Espingardaria-Mirobriga-61556277698212/' },
+    { name: 'Caça & Pesca', url: 'https://www.facebook.com/cacapesca09/?locale=pt_PT' },
+    { name: 'Bem Pescar', url: 'https://www.facebook.com/BEMPESCAR/?locale=pt_PT' },
+    { name: 'Anzol do Sado', url: 'https://anzoldosado.sumupstore.com/' },
+    { name: 'Sado Pesca', url: 'https://www.facebook.com/p/Sado-Pesca-100063552639173/?locale=pt_PT' },
+    { name: 'Fisga Peixe', url: 'https://www.facebook.com/p/Fisgapeixe-100059731135858/?locale=pt_PT' },
+  ];
+  readonly imageDimensions: Record<number, [number, number]> = {
+    5: [1200, 800], 6: [1200, 800], 7: [1200, 800], 8: [1200, 800], 9: [1200, 800],
+    10: [1200, 800], 1: [958, 677], 2: [1134, 796], 3: [1039, 732], 4: [1042, 729],
+  };
+  readonly selectedSeries = signal('all');
+  readonly selectedSize = signal('all');
+  readonly filteredProducts = computed(() => this.products.filter(product =>
+    (this.selectedSeries() === 'all' || product.series === this.selectedSeries()) &&
+    (this.selectedSize() === 'all' || product.sizeNumber === this.selectedSize())
+  ));
+  constructor(public translate: TranslateService, route: ActivatedRoute) {
+    route.fragment.pipe(takeUntilDestroyed()).subscribe(fragment => {
+      // A direct link to a product must remain reachable after using filters.
+      if (fragment?.startsWith('product-')) this.resetFilters();
+    });
   }
-
-  setHoveredProduct(id: number | null) {
-    this.hoveredProduct.set(id);
-  }
-
-  scrollToContact() {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  }
-
-  getTranslatedCategory(category: string): string {
-    if (category === "all") {
-      return this.translate.getLang() === "en" ? "All" : "Todos";
-    }
-    return this.translate.t(category);
-  }
-
-  getFormattedDescription(text: string) {
-    const lines = text.split("\n").filter((line) => line.trim());
-    const html = lines
-      .map((line, index) => {
-        if (index === 0) {
-          return `<div class="desc-question"><strong>${line}</strong></div>`;
-        }
-        return `<div class="desc-line">• ${line}</div>`;
-      })
-      .join("");
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  }
-
-  getProductJsonLd(product: Product) {
-    try {
-      const imageUrl =
-        typeof window !== "undefined" && window.location
-          ? new URL(product.image, window.location.origin).href
-          : product.image;
-      const pageUrl =
-        typeof window !== "undefined" && window.location
-          ? `${window.location.origin}${window.location.pathname}#product-${product.id}`
-          : `https://www.prochoco.com/#product-${product.id}`;
-
-      const json: any = {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: product.name,
-        image: [imageUrl],
-        description: product.description.replace(/\n/g, " "),
-        sku: String(product.id),
-        brand: {
-          "@type": "Brand",
-          name: "PROCHOCO",
-        },
-        url: pageUrl,
-        category: this.translate?.t(product.categoryKey) || product.categoryKey,
-      };
-      return this.sanitizer.bypassSecurityTrustHtml(JSON.stringify(json));
-    } catch (e) {
-      return this.sanitizer.bypassSecurityTrustHtml("{}");
-    }
+  text(pt: string, en: string): string { return this.translate.getLang() === 'en' ? en : pt; }
+  setSize(event: Event): void { this.selectedSize.set((event.target as HTMLSelectElement).value); }
+  resetFilters(): void { this.selectedSeries.set('all'); this.selectedSize.set('all'); }
+  seriesName(product: Product): string { return product.series === 'predador' ? product.name.split(' - ')[0].replace('PROCHOCO ', '') : 'PROCHOCO SQUID JIGS'; }
+  descriptionLines(product: Product): string[] {
+    return (this.translate.getLang() === 'en' ? product.descriptionEn : product.description).split('\n').map(line => line.trim()).filter(Boolean);
   }
 }

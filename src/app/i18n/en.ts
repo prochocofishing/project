@@ -4,10 +4,30 @@ const en = {
   "nav.about": "About",
   "nav.contact": "Contact",
 
-  "header.tagline": "SQUID & CUTTLEFISH JIGS",
+  "header.tagline": "CEPHALOPOD FISHING JIGS",
 
-  "hero.title_line1": "PREMIUM LURES FOR",
-  "hero.title_highlight": "CEPHALOPOD FISHING",
+  "hero.eyebrow": "Portuguese brand · Cephalopod fishing",
+  "hero.title_line1": "Cephalopod fishing jigs.",
+  "hero.title_highlight": "Passion in every detail.",
+  "hero.description": "Jigs for cephalopod fishing: cuttlefish, squid and octopus. Designed in Portugal with attention to detail. Explore the patterns and choose your next fishing companion.",
+  "hero.button.retailers": "Where to buy",
+  "hero.video.open": "Watch fishing videos",
+  "videos.eyebrow": "OUT AT SEA",
+  "videos.title": "See PROCHOCO in action.",
+  "videos.intro": "From the PREDADOR series to CIRCUS, watch our jigs in action while fishing for cuttlefish.",
+  "videos.play": "Play video",
+  "videos.close": "Close video",
+  "videos.youtube": "Watch on YouTube",
+  "videos.newWindow": "(opens in a new window)",
+  "videos.predador.title": "XXL cuttlefish with Lula em Chamas",
+  "videos.predador.description": "The PREDADOR series Lula em Chamas 2.5 jig in action while fishing for cuttlefish.",
+  "videos.circus.title": "Cuttlefish fishing in Setúbal",
+  "videos.circus.description": "Watch the PROCHOCO CIRCUS underwater while fishing for cuttlefish in Setúbal.",
+  "hero.video.close": "Close video",
+  "hero.video.title": "PROCHOCO — introduction to our cephalopod fishing jigs",
+  "hero.collection": "PREDADOR series",
+  "hero.image.alt": "PROCHOCO PREDADOR 01 Cavala Japonesa cephalopod jig, size 2.5, 10 g",
+  "hero.features.label": "PROCHOCO features",
   "hero.subtitle": "Great stories begin with a simple idea... ours was no different. It started with a deep passion for the sea and the craft of fishing. We believed, with unwavering conviction, that we could turn that love into something greater: creating high-quality fishing gear built to withstand hard use, serve those who live the sea and above all be truly effective. Armed with know‑how, the best materials and relentless dedication, we took on the challenge. What began as a simple passion became a mission, and a great story that keeps growing.",
 
 
@@ -16,8 +36,8 @@ const en = {
 
   "feature.professional.title": "Professional Quality",
   "feature.professional.desc": "Crafted for serious anglers",
-  "feature.proven.title": "Proven Results",
-  "feature.proven.desc": "High catch rate guarantee",
+  "feature.proven.title": "Attention to Detail",
+  "feature.proven.desc": "Balance, movement and colour patterns",
   "feature.wholesale.title": "Wholesale Pricing",
   "feature.wholesale.desc": "Competitive rates for retailers",
 
@@ -35,7 +55,7 @@ const en = {
   "product.spec.weight": "Weight:",
   "product.spec.sinking": "Sinking:",
   "product.colorsLabel": "Available Colors:",
-  "product.category.squid": "Squid jig \"clown\" with visible weight",
+  "product.category.squid": "Cephalopod jig \"clown\" with visible weight",
   "product.feature.bkk": "Premium BKK hooks",
   "product.feature.glow": "Glow-in-the-dark tape",
   "product.feature.glowBody": "Glow-in-the-dark body",
@@ -64,7 +84,7 @@ const en = {
   "footer.cookies": "Cookie Policy"
 
   ,"about.title": "About PROCHOCO",
-  "about.paragraph": "PROCHOCO is a Portuguese brand that designs and sells high-quality squid fishing jigs with great attention to detail.",
+  "about.paragraph": "PROCHOCO is a Portuguese brand that designs and sells high-quality cephalopod fishing jigs with great attention to detail.",
   "about.value1.title": "Made in Portugal",
   "about.value1.desc": "100% national design and production, with great attention to detail.",
   "about.value2.title": "Premium Quality",
@@ -91,11 +111,11 @@ const en = {
   "contact.message": "Message",
   "contact.send": "Send Inquiry",
   "contact.sending": "Sending...",
-  "contact.thanks": "Thank you! We'll reply within 24 hours.",
+  "contact.thanks": "Thank you! We have received your enquiry and will get in touch.",
   "contact.error": "Failed to send. Please try again later."
 
   ,"consent.title": "Privacy",
-  "consent.description": "We use first- and third-party cookies to offer you a better experience and service. To learn which cookies we use and how to disable them, read the Cookie Policy. To continue, please choose 'Accept' or 'Decline'.",
+  "consent.description": "With your permission, we use Google Analytics to understand how this site is used. Accept, decline or change your choice in the footer.",
   "consent.policy_link_text": "Read Cookie Policy",
   "consent.accept": "Accept",
   "consent.decline": "Decline"

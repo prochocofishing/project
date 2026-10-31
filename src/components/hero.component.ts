@@ -1,341 +1,227 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, HostListener, effect, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslateService } from '../app/services/translate.service';
 
 @Component({
-  selector: 'app-hero',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'app-hero', standalone: true, imports: [RouterLink],
   template: `
-    <section id="home" class="hero">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="hero-title">
-            {{ translate.t('hero.title_line1') }}
-            <span class="highlight">{{ translate.t('hero.title_highlight') }}</span>
-          </h1>
-          <p class="hero-subtitle">{{ translate.t('hero.subtitle') }}</p>
-    
-          <div class="hero-buttons">
-            <button class="btn btn-primary" (click)="scrollToProducts()">
-              {{ translate.t('hero.button.view') }}
-            </button>
-            <!-- <button class="btn btn-outline" (click)="scrollToContact()">
-              {{ translate.t('hero.button.wholesale') }}
-            </button> -->
+    <section id="home" class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <p class="eyebrow"><span aria-hidden="true"></span> {{ translate.t('hero.eyebrow') }}</p>
+            <h1 id="hero-title">{{ translate.t('hero.title_line1') }}<span>{{ translate.t('hero.title_highlight') }}</span></h1>
+            <p class="hero-description">{{ translate.t('hero.description') }}</p>
+            <div class="hero-buttons">
+              <a class="btn btn-primary" [routerLink]="translate.homePath()" fragment="products">{{ translate.t('hero.button.view') }} <span aria-hidden="true">↗</span></a>
+              <a class="btn btn-outline" [routerLink]="translate.homePath()" fragment="retailers">{{ translate.t('hero.button.retailers') }}</a>
+            </div>
+            <a class="video-button" [routerLink]="translate.homePath()" fragment="videos">
+              <span class="play-icon" aria-hidden="true">▶</span> {{ translate.t('hero.video.open') }} <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+          <div class="hero-display" role="region" [attr.aria-roledescription]="text('carrossel', 'carousel')"
+            [attr.aria-label]="text('Fotografias PROCHOCO', 'PROCHOCO photographs')"
+            (mouseenter)="hoverPaused.set(true)" (mouseleave)="hoverPaused.set(false)"
+            (focusin)="focusPaused.set(true)" (focusout)="onSlideshowFocusOut($event)"
+            (keydown)="onSlideshowKeydown($event)">
+            <div class="display-top">
+              <span>PROCHOCO</span>
+              <span>{{ text('GALERIA', 'GALLERY') }}</span>
+            </div>
+            <div class="product-visual" [attr.aria-busy]="pendingSlide() !== null">
+              @for (slide of slides; track slide.src; let index = $index) {
+                <div class="photo-slide" [class.is-active]="activeSlide() === index" role="group"
+                  [attr.aria-roledescription]="text('diapositivo', 'slide')"
+                  [attr.aria-label]="(index + 1) + text(' de ', ' of ') + slides.length"
+                  [attr.aria-hidden]="activeSlide() !== index">
+                  <img class="slide-image" [src]="slide.src" [srcset]="slide.srcset" [sizes]="slide.sizes"
+                    [alt]="text(slide.altPt, slide.altEn)" [width]="slide.width" [height]="slide.height"
+                    [attr.loading]="index === 0 ? 'eager' : 'lazy'" [attr.fetchpriority]="index === 0 ? 'high' : 'low'"
+                    decoding="async" (load)="onSlideLoaded(index)" (error)="onSlideError(index)" />
+                </div>
+              }
+              @if (pendingSlide() !== null) { <span class="slide-loading" role="status">{{ text('A carregar fotografia…', 'Loading photograph…') }}</span> }
+            </div>
+            <div class="display-bottom">
+              <div class="slide-caption" [attr.aria-live]="rotationEnabled() ? 'off' : 'polite'" aria-atomic="true">
+                <span class="display-label">{{ translate.t('hero.collection') }}</span>
+                <p>{{ text(slides[activeSlide()].titlePt, slides[activeSlide()].titleEn) }}</p>
+              </div>
+              <div class="slideshow-controls" [attr.aria-label]="text('Controlos das fotografias', 'Photograph controls')">
+                <div class="slide-dots" role="group" [attr.aria-label]="text('Escolher fotografia', 'Choose photograph')">
+                  @for (slide of slides; track slide.src; let index = $index) {
+                    <button type="button" class="slide-dot" [attr.aria-pressed]="activeSlide() === index"
+                      [attr.aria-label]="text('Mostrar fotografia ', 'Show photograph ') + (index + 1) + ': ' + text(slide.titlePt, slide.titleEn)"
+                      (click)="selectSlide(index)"><span aria-hidden="true"></span></button>
+                  }
+                </div>
+                <span class="slide-counter" aria-hidden="true">0{{ activeSlide() + 1 }} / 0{{ slides.length }}</span>
+                <div class="slide-actions">
+                  <button type="button" class="slide-control" [attr.aria-label]="text('Fotografia anterior', 'Previous photograph')" (click)="advanceSlide(-1)"><span aria-hidden="true">‹</span></button>
+                  <button type="button" class="slide-control rotation-control"
+                    [attr.aria-label]="rotationEnabled() ? text('Pausar slideshow', 'Pause slideshow') : text('Reproduzir slideshow', 'Play slideshow')"
+                    (click)="toggleRotation()"><span aria-hidden="true">{{ rotationEnabled() ? 'Ⅱ' : '▶' }}</span></button>
+                  <button type="button" class="slide-control" [attr.aria-label]="text('Fotografia seguinte', 'Next photograph')" (click)="advanceSlide(1)"><span aria-hidden="true">›</span></button>
+                </div>
+              </div>
+              @if (photoUnavailable()) { <p class="slide-error" role="status">{{ text('Não foi possível carregar a fotografia. Tente novamente.', 'The photograph could not be loaded. Please try again.') }}</p> }
+            </div>
           </div>
         </div>
-    <div class="hero-image">
-          <div class="hero-video-wrap">
-            <iframe 
-              class="youtube-video"
-              src="https://www.youtube.com/embed/TCt42EKedug?si=4EhuHxD8158wtRmV" 
-              title="PROCHOCO Video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-            </iframe>
-          
-          </div>
-        </div> 
-      </div>
-      <div class="hero-features">
-        <div class="feature">
-          <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l7 3v6c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-            </div>
-          <h3>{{ translate.t('feature.professional.title') }}</h3>
-          <p>{{ translate.t('feature.professional.desc') }}</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v7a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a1.5 1.5 0 0 0 0 3h3"/><path d="M17 6h3a1.5 1.5 0 0 1 0 3h-3"/></svg>
-            </div>
-          <h3>{{ translate.t('feature.proven.title') }}</h3>
-          <p>{{ translate.t('feature.proven.desc') }}</p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            </div>
-          <h3>{{ translate.t('feature.wholesale.title') }}</h3>
-          <p>{{ translate.t('feature.wholesale.desc') }}</p>
+        <div class="hero-features" [attr.aria-label]="translate.t('hero.features.label')">
+          <div class="feature"><span class="feature-number" aria-hidden="true">01 /</span><div><h2>{{ translate.t('feature.professional.title') }}</h2><p>{{ translate.t('feature.professional.desc') }}</p></div></div>
+          <div class="feature"><span class="feature-number" aria-hidden="true">02 /</span><div><h2>{{ translate.t('feature.proven.title') }}</h2><p>{{ translate.t('feature.proven.desc') }}</p></div></div>
+          <div class="feature"><span class="feature-number" aria-hidden="true">03 /</span><div><h2>{{ translate.t('feature.wholesale.title') }}</h2><p>{{ translate.t('feature.wholesale.desc') }}</p></div></div>
         </div>
       </div>
     </section>
   `,
   styles: [`
-    .hero {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 8rem 2rem 4rem;
-      position: relative;
-      overflow: hidden;
+    .hero { padding: clamp(2.75rem, 6vw, 5rem) 0 0; background: #071723; position: relative; }
+    .hero-content { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-bottom: 4rem; }
+    .eyebrow { color: #b2c5cb; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .6rem; font-size: .68rem; }
+    .eyebrow span { width: 6px; height: 6px; background: #73e1cf; border-radius: 50%; }
+    h1 { font-size: clamp(2.9rem, 4.7vw, 4.5rem); font-weight: 650; letter-spacing: -.055em; line-height: 1.07; color: #f4f7f6; max-width: 650px; }
+    h1 span { display: block; color: #73e1cf; }
+    .hero-description { color: #b6c8d0; margin-top: 1.6rem; font-size: 1.02rem; max-width: 450px; line-height: 1.8; }
+    .hero-buttons { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 2rem; }
+    .video-button { display: inline-flex; gap: .65rem; align-items: center; margin-top: 1.4rem; min-height: 44px; background: none; color: #73e1cf; border: 0; font-size: .9rem; font-weight: 650; padding: .3rem 0; }
+    .video-button:hover { color: #73e1cf; }
+    .play-icon { display: grid; place-items: center; border: 1px solid #65808b; height: 25px; width: 25px; border-radius: 50%; font-size: .5rem; padding-left: 1px; }
+    .hero-display { border: 1px solid #38525d; border-radius: 8px; background: #102b39; overflow: hidden; }
+    .display-top { display: flex; justify-content: space-between; gap: .5rem; padding: 1.2rem 1.5rem; color: #b1c9d0; font-size: .6rem; font-weight: 600; letter-spacing: .13em; border-bottom: 1px solid #38525d; }
+    .display-top > span:first-child { color: #73e1cf; }
+    .product-visual { background: #0a1c28; position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+    .photo-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .45s ease; pointer-events: none; }
+    .photo-slide.is-active { opacity: 1; }
+    .product-visual .slide-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .slide-loading { position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); padding: .4rem .75rem; border-radius: 4px; background: #071723e6; color: #edf5f6; font-size: .75rem; white-space: nowrap; }
+    .display-bottom { padding: 1.2rem 1.5rem .75rem; }
+    .display-label { color: #73e1cf; font-size: .6rem; letter-spacing: .15em; }
+    .slide-caption { min-height: 4.25rem; }
+    .slide-caption p { color: #f4f7f6; font-size: .95rem; font-weight: 600; line-height: 1.4; margin-top: .25rem; }
+    .slideshow-controls { display: flex; align-items: center; gap: .5rem; padding-top: .4rem; border-top: 1px solid #38525d; }
+    .slide-dots, .slide-actions { display: flex; align-items: center; }
+    .slide-dot { display: grid; place-items: center; width: 32px; height: 44px; border: 0; background: transparent; }
+    .slide-dot span { width: 7px; height: 7px; border-radius: 50%; background: #90aab5; transition: background-color .2s, transform .2s; }
+    .slide-dot[aria-pressed=true] span { background: #73e1cf; transform: scale(1.3); }
+    .slide-counter { margin-right: auto; color: #b1c9d0; font-size: .65rem; letter-spacing: .1em; white-space: nowrap; }
+    .slide-actions { gap: .25rem; }
+    .slide-control { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: #edf5f6; font-size: 1.6rem; line-height: 1; }
+    .slide-control:hover { background: #1b3b4a; border-color: #65808b; color: #73e1cf; }
+    .rotation-control { font-size: .8rem; }
+    .slide-error { padding-top: .5rem; color: #f4ce9d; font-size: .75rem; }
+    .hero-features { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #2c4451; }
+    .feature { display: flex; gap: 1rem; padding: 1.75rem 1.5rem; }
+    .feature:first-child { padding-left: 0; }
+    .feature + .feature { border-left: 1px solid #2c4451; }
+    .feature-number { font-size: .65rem; color: #73e1cf; padding-top: .2rem; white-space: nowrap; }
+    .feature h2 { font-size: .9rem; font-weight: 600; letter-spacing: -.01em; color: #edf5f6; }
+    .feature p { color: #a9bfc8; font-size: .74rem; margin-top: .4rem; }
+    @media(max-width: 850px) {
+      .hero-content { gap: 2.5rem; grid-template-columns: 1fr; padding-bottom: 2.5rem; }
+      .hero-text { max-width: 620px; }
+      h1 { font-size: clamp(2.7rem, 7vw, 4rem); }
+      .hero-description { max-width: 530px; }
+      .hero-display { width: 100%; max-width: 570px; justify-self: center; }
+      .feature { padding: 1.3rem 1rem; gap: .6rem; }
     }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="wave" patternUnits="userSpaceOnUse" width="100" height="100"><path d="M0,50 Q25,30 50,50 T100,50 V100 H0 Z" fill="rgba(59,130,246,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23wave)"/></svg>') repeat;
-      opacity: 0.1;
-    }
-
-    .hero-content {
-      max-width: 1200px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-title {
-      font-size: 3.5rem;
-      font-weight: bold;
-      line-height: 1.1;
-      color: #f1f5f9;
-      margin-bottom: 1.5rem;
-    }
-
-    .highlight {
-      color: #3b82f6;
-      background: linear-gradient(45deg, #3b82f6, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: #cbd5e1;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-
-    .hero-badges {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.9rem;
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      border-radius: 40px;
-      color: #bfdbfe;
-      font-size: 0.85rem;
-      font-weight: 600;
-      backdrop-filter: blur(6px);
-    }
-
-    .badge-icon {
-      width: 16px;
-      height: 16px;
-      color: #3b82f6;
-      flex-shrink: 0;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(45deg, #3b82f6, #06b6d4);
-      color: white;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #3b82f6;
-      border: 2px solid #3b82f6;
-    }
-
-    .btn-outline:hover {
-      background: #3b82f6;
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .hero-image {
-      position: relative;
-    }
-
-    .hero-video-wrap {
-      position: relative;
-    }
-
-    .youtube-video {
-      width: 100%;
-      height: 400px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border: none;
-      display: block;
-    }
-
-  
-
-
-    .main-image {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .floating-card {
-      position: absolute;
-      bottom: -20px;
-      right: -20px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 1.5rem;
-      display: flex;
-      gap: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .stat {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #3b82f6;
-    }
-
-    .stat-label {
-      font-size: 0.875rem;
-      color: #cbd5e1;
-    }
-
-    .hero-features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      max-width: 1200px;
-      margin-top: 4rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .feature {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .feature:hover {
-      transform: translateY(-5px);
-    }
-
-    .feature-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: center;
-      color: #3b82f6;
-    }
-
-    .feature-icon svg {
-      width: 44px;
-      height: 44px;
-      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.35));
-    }
-
-    .feature h3 {
-      color: #f1f5f9;
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature p {
-      color: #cbd5e1;
-      font-size: 0.875rem;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        padding: 6rem 1rem 2rem;
-      }
-
-      .hero-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        text-align: center;
-      }
-
-      .hero-title {
-        font-size: 2.5rem;
-      }
-
-      .hero-buttons {
-        justify-content: center;
-      }
-
-      .hero-badges {
-        justify-content: center;
-      }
-
-      .hero-features {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-
-      .floating-card {
-        position: relative;
-        bottom: 0;
-        right: 0;
-        margin-top: 1rem;
-      }
+    @media(max-width: 560px) {
+      .hero-features { grid-template-columns: 1fr; }
+      .feature, .feature:first-child { padding: 1.15rem 0; }
+      .feature + .feature { border-left: 0; border-top: 1px solid #2c4451; }
+      .feature p { margin-top: .2rem; font-size: .8rem; }
+      .feature h2 { font-size: .95rem; }
+      .hero-buttons .btn { flex-grow: 1; padding-inline: 1rem; }
+      .display-bottom, .display-top { padding: 1rem; }
     }
   `]
 })
 export class HeroComponent {
-  constructor(public translate: TranslateService) {}
-  scrollToProducts() {
-    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+  private readonly motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  readonly activeSlide = signal(0);
+  readonly rotationEnabled = signal(!this.motionPreference.matches);
+  readonly hoverPaused = signal(false);
+  readonly focusPaused = signal(false);
+  readonly pageHidden = signal(document.hidden);
+  readonly pendingSlide = signal<number | null>(null);
+  readonly photoUnavailable = signal(false);
+  private readonly loadedSlides = new Set<number>();
+  private readonly failedSlides = new Set<number>();
+  readonly slides = [
+    {
+      src: 'assets/images/hero/collection-predador.webp',
+      srcset: 'assets/images/hero/collection-predador-retouched-640.webp 640w, assets/images/hero/collection-predador.webp 1200w',
+      sizes: '(max-width: 600px) calc(100vw - 34px), (max-width: 850px) 570px, (max-width: 1248px) 44vw, 544px',
+      width: 1200, height: 873,
+      titlePt: 'Os padrões da série PREDADOR', titleEn: 'The PREDADOR series patterns',
+      altPt: 'Seis palhaços de pesca PROCHOCO da série PREDADOR, com diferentes padrões e cores, sobre um fundo claro',
+      altEn: 'Six PROCHOCO PREDADOR fishing jigs in different patterns and colours on a light background',
+    },
+    {
+      src: 'assets/images/hero/pesca-chocos.webp',
+      srcset: 'assets/images/hero/pesca-chocos-360.webp 360w, assets/images/hero/pesca-chocos-640.webp 640w, assets/images/hero/pesca-chocos.webp 703w',
+      sizes: '(max-width: 600px) 40vw, (max-width: 850px) 215px, 205px',
+      width: 703, height: 1400,
+      titlePt: 'Palhaços PROCHOCO na pesca ao choco', titleEn: 'PROCHOCO jigs for cuttlefish fishing',
+      altPt: 'Palhaços de pesca PROCHOCO de vários padrões junto de chocos capturados',
+      altEn: 'PROCHOCO fishing jigs in several patterns alongside caught cuttlefish',
+    },
+  ];
+
+  constructor(public translate: TranslateService, destroyRef: DestroyRef) {
+    effect(onCleanup => {
+      if (!this.rotationEnabled() || this.hoverPaused() || this.focusPaused() || this.pageHidden()) return;
+      const timer = window.setInterval(() => this.advanceSlide(1, false), 6000);
+      onCleanup(() => window.clearInterval(timer));
+    });
+    const onMotionChange = (event: MediaQueryListEvent) => { if (event.matches) this.rotationEnabled.set(false); };
+    this.motionPreference.addEventListener('change', onMotionChange);
+    destroyRef.onDestroy(() => this.motionPreference.removeEventListener('change', onMotionChange));
   }
 
-  scrollToContact() {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  text(pt: string, en: string) { return this.translate.getLang() === 'en' ? en : pt; }
+
+  selectSlide(index: number, manual = true) {
+    if (manual) this.rotationEnabled.set(false);
+    if (this.failedSlides.has(index)) { this.photoUnavailable.set(true); return; }
+    this.photoUnavailable.set(false);
+    if (this.loadedSlides.has(index)) { this.pendingSlide.set(null); this.activeSlide.set(index); }
+    else this.pendingSlide.set(index);
   }
+
+  advanceSlide(direction: number, manual = true) {
+    this.selectSlide((this.activeSlide() + direction + this.slides.length) % this.slides.length, manual);
+  }
+
+  toggleRotation() {
+    const enabled = !this.rotationEnabled();
+    this.rotationEnabled.set(enabled);
+    if (enabled) this.focusPaused.set(false);
+  }
+
+  onSlideLoaded(index: number) {
+    this.loadedSlides.add(index);
+    if (this.pendingSlide() === index) { this.pendingSlide.set(null); this.activeSlide.set(index); }
+  }
+
+  onSlideError(index: number) {
+    this.failedSlides.add(index);
+    if (this.pendingSlide() === index) { this.pendingSlide.set(null); this.photoUnavailable.set(true); this.rotationEnabled.set(false); }
+  }
+
+  onSlideshowFocusOut(event: FocusEvent) {
+    if (!(event.currentTarget as HTMLElement).contains(event.relatedTarget as Node | null)) this.focusPaused.set(false);
+  }
+
+  onSlideshowKeydown(event: KeyboardEvent) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.advanceSlide(event.key === 'ArrowLeft' ? -1 : 1);
+    }
+  }
+
+  @HostListener('document:visibilitychange') onVisibilityChange() { this.pageHidden.set(document.hidden); }
 }

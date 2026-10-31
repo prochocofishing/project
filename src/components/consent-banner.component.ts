@@ -1,95 +1,41 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+﻿import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ConsentService } from '../app/services/consent.service';
 import { AnalyticsService } from '../app/services/analytics.service';
 import { TranslateService } from '../app/services/translate.service';
 
 @Component({
-  selector: 'app-consent-banner',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'app-consent-banner', standalone: true, imports: [RouterLink],
   template: `
-    <div *ngIf="visible" class="consent-banner" role="region" aria-label="{{ translate.t('consent.title') }}">
-      <div class="consent-text">
-        <p class="consent-desc">
-          {{ translate.t('consent.description') }}
-          <a href="/cookies" (click)="openPolicy($event)">{{ translate.t('consent.policy_link_text') }}</a>
-        </p>
-      </div>
-      <div class="consent-actions">
-        <button class="btn btn-secondary" (click)="decline()">{{ translate.t('consent.decline') }}</button>
-        <button class="btn btn-primary" (click)="accept()">{{ translate.t('consent.accept') }}</button>
-      </div>
-    </div>
+    @if (visible) {
+      <aside class="consent-banner" aria-labelledby="consent-title">
+        <div class="consent-text">
+          <h2 id="consent-title">{{ translate.t('consent.title') }}</h2>
+          <p>{{ translate.t('consent.description') }} <a [routerLink]="translate.pagePath('cookies')">{{ translate.t('consent.policy_link_text') }}</a></p>
+        </div>
+        <div class="consent-actions">
+          <button id="consent-decline" type="button" (click)="decline()">{{ translate.t('consent.decline') }}</button>
+          <button type="button" (click)="accept()">{{ translate.t('consent.accept') }}</button>
+        </div>
+      </aside>
+    }
   `,
-  styles: [
-    `
-    .consent-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 10000;
-      background: linear-gradient(180deg, #0b1220, #0f172a);
-      color: #e6eef8;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 -8px 30px rgba(2, 6, 23, 0.5);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .consent-text { flex: 1 1 auto; }
-    .consent-desc { color: #cbd5e1; margin: 0; line-height: 1.5; max-width: 900px; font-size: 0.95rem; }
-    .consent-desc a { color: #60a5fa; text-decoration: underline; white-space: nowrap; }
-    .consent-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-shrink: 0;
-    }
-    .btn { padding: 0.6rem 1.1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem; }
-    .btn-primary { background: linear-gradient(45deg,#3b82f6,#06b6d4); color: white; }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
-    .btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); }
-    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
-    @media (max-width: 768px) {
-      .consent-banner { flex-direction: column; align-items: stretch; padding: 1rem; }
-      .consent-actions { flex-direction: column; }
-      .btn { width: 100%; }
-    }
-    `,
-  ],
+  styles: [`
+    .consent-banner { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); width: min(1040px, calc(100% - 2rem)); z-index: 1100; display: flex; align-items: center; gap: 1.5rem; padding: 1.1rem 1.4rem; background: #fff; color: #112c3c; border: 1px solid #c6d6d4; border-radius: 10px; box-shadow: 0 8px 36px #07172326; }
+    .consent-text { flex: 1; min-width: 0; }
+    h2 { margin: 0 0 .25rem; color: #112c3c; font-size: .86rem; font-weight: 700; }
+    p { margin: 0; color: #536874; font-size: .78rem; line-height: 1.65; }
+    a { color: #156393; text-decoration: underline; text-underline-offset: 2px; }
+    .consent-actions { display: flex; gap: .6rem; flex-shrink: 0; }
+    button { min-width: 92px; min-height: 44px; padding: .6rem 1rem; border: 1px solid #112c3c; border-radius: 5px; background: #112c3c; color: #fff; font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+    button:hover { background: #19465b; }
+    button:active { background: #071723; }
+    @media (max-width: 640px) { .consent-banner { bottom: .6rem; width: calc(100% - 1.2rem); padding: 1rem; flex-direction: column; align-items: stretch; gap: .75rem; } .consent-actions button { flex: 1; } }
+  `]
 })
 export class ConsentBannerComponent {
   constructor(private consent: ConsentService, private analytics: AnalyticsService, public translate: TranslateService) {}
-
-  get visible() {
-    return this.consent.consentState()() === 'unknown';
-  }
-
-  accept() {
-    this.consent.setConsent(true);
-    // analytics service reacts to consent and loads gtag
-  }
-
-  decline() {
-    this.consent.setConsent(false);
-    this.analytics.optOut();
-  }
-
-  openPolicy(event: Event) {
-    // Open the cookie policy in a new tab so users can read it without
-    // having to accept/decline the modal. Prevent default to ensure a new
-    // tab is used even in SPA routing contexts.
-    try {
-      event.preventDefault();
-      // Use absolute path to be safe
-      const url = '/cookies';
-      window.open(url, '_blank', 'noopener');
-    } catch (e) {
-      // Fallback: do nothing, browser default will navigate
-    }
-  }
+  get visible() { return this.consent.consentState()() === 'unknown'; }
+  accept() { this.consent.setConsent(true); }
+  decline() { this.consent.setConsent(false); this.analytics.optOut(); }
 }

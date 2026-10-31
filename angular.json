@@ -23,16 +23,50 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "baseHref": "https://www.prochoco.com/"
+              "baseHref": "/",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "750kb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20kb",
+                  "maximumError": "30kb"
+                }
+              ]
             }
           },
           "options": {
             "assets": [
               "src/CNAME",
+              "src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "src/images",
                 "output": "/assets/images"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "robots.txt",
+                "input": ".",
+                "output": "/"
+              },
+              {
+                "glob": "sitemap.xml",
+                "input": ".",
+                "output": "/"
               }
             ],
             "index": "src/index.html",
@@ -47,7 +81,7 @@
           }
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "development": {
               "buildTarget": "demo:build:development"
